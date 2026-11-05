@@ -24,10 +24,10 @@ public final class MenuOpciones {
 
         teclasDisponibles.clear();
 
-        char letras[] = teclasUsables.toUpperCase().toCharArray();
+        char teclas[] = teclasUsables.toUpperCase().toCharArray();
 
-        for (int i=0;i<letras.length;i++) {
-            teclasDisponibles.add(letras[i]);
+        for (int i=0;i<teclas.length;i++) {
+            teclasDisponibles.add(teclas[i]);
         }
     }
 
@@ -42,7 +42,7 @@ public final class MenuOpciones {
 
     // teclaNecesaria puede ser null.
     // si teclaNecesaria es un caracter valido, entonces el usuario deberá tipear ese caracter hardcodeado en el codigo para seleccionar esa opcion.
-    // si teclaNecesaria es null, entonces la letra se generará automaticamente en tiempo de ejecucion buscando en la lista de caracteres NO usados (teclasDisponibles).
+    // si teclaNecesaria es null, entonces la tecla se generará automaticamente en tiempo de ejecucion buscando en la lista de caracteres NO usados (teclasDisponibles).
     public void agregarOpcion(String textoOpcion, Character teclaNecesaria) {
         if (textoOpciones.contains(textoOpcion)) // si ya fue agregada, que no agregue de vuelta
             return;
@@ -53,7 +53,7 @@ public final class MenuOpciones {
 
             // si la tecla ya fue utilizada para otra opcion
             if (teclaOpciones.contains(teclaNecesaria)) {
-                // TODO: tirar exception que la letra ya fue utilizada
+                // TODO: tirar exception que la tecla ya fue utilizada
             }
 
             // quitar la tecla de la lista de teclas disponibles
@@ -74,10 +74,10 @@ public final class MenuOpciones {
 
         int idTeclaSiguiente = 0;
 
-        for (Character letra : teclaOpciones) {
+        for (Character tecla : teclaOpciones) {
 
-            if (letra!=null) {
-                teclasMapeadas.add(letra);
+            if (tecla!=null) {
+                teclasMapeadas.add(tecla);
             } else {
 
                 Character teclaEncontrada = null;
@@ -87,7 +87,7 @@ public final class MenuOpciones {
                     idTeclaSiguiente++;
 
                 } catch (IndexOutOfBoundsException e) {
-                    // TODO: tirar excepcion que no quedaron mas letras para todas las opciones
+                    // TODO: tirar excepcion que no quedaron mas teclas para todas las opciones
                 }
 
                 teclasMapeadas.add(teclaEncontrada);
@@ -101,14 +101,14 @@ public final class MenuOpciones {
 
     public String mostrarOpciones() {
 
-        ArrayList<Character> letrasMapeadas = recibirMapeoTeclas();
+        ArrayList<Character> teclasMapeadas = recibirMapeoTeclas();
 
         StringBuilder out = new StringBuilder();
 
         int idx = 0;
 
         for (String opcion : textoOpciones) {
-            out.append(letrasMapeadas.get(idx));
+            out.append(teclasMapeadas.get(idx));
             out.append(": ");
             out.append(opcion);
             out.append('\n');
@@ -118,15 +118,15 @@ public final class MenuOpciones {
         return out.toString();
     }
 
-    public String encontrarOpcion(char letraRecibida) {
+    public String encontrarOpcion(char teclaRecibida) {
 
-        letraRecibida = Character.toUpperCase(letraRecibida);
+        teclaRecibida = Character.toUpperCase(teclaRecibida);
 
-        ArrayList<Character> letrasMapeadas = recibirMapeoTeclas();
+        ArrayList<Character> teclasMapeadas = recibirMapeoTeclas();
 
 
-        for (int i=0;i<letrasMapeadas.size();i++) {
-            if (letrasMapeadas.get(i) == letraRecibida) {
+        for (int i=0;i<teclasMapeadas.size();i++) {
+            if (teclasMapeadas.get(i) == teclaRecibida) {
                 return textoOpciones.get(i);
             }
         }
