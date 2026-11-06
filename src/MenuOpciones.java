@@ -10,11 +10,11 @@ public final class MenuOpciones {
     private ArrayList<Character> teclasDisponibles;
 
 
-    // EDITABLE - teclas que el usuario tendrá que presionar para cada opcion. todas las letras deben estar en mayusculas
+    // EDITABLE - teclas que el usuario tendrá que presionar para cada opcion. Todas las letras deben estar en mayúsculas
 
     private final static String teclasUsables = "ABCDEFGHIJKLMNOPQRSTUVXWYZ123456789";
 
-    // inicializa (o re-inicializa) todos los valores del menu, por si el usuario quiere reutilizar la misma variable
+    // inicializa (o reinicializa) todos los valores del menu, por si el usuario quiere reutilizar la misma variable
     public void reiniciarMenu() {
 
         textoOpciones.clear();
@@ -41,19 +41,19 @@ public final class MenuOpciones {
     }
 
     // teclaNecesaria puede ser null.
-    // si teclaNecesaria es un caracter valido, entonces el usuario deberá tipear ese caracter hardcodeado en el codigo para seleccionar esa opcion.
-    // si teclaNecesaria es null, entonces la tecla se generará automaticamente en tiempo de ejecucion buscando en la lista de caracteres NO usados (teclasDisponibles).
+    // Si teclaNecesaria es un carácter válido, entonces el usuario deberá tipear ese carácter hardcodeado en el código para seleccionar esa opción.
+    // Si teclaNecesaria es null, entonces la tecla se generará automáticamente en tiempo de ejecución buscando en la lista de caracteres NO usados (teclasDisponibles).
     public void agregarOpcion(String textoOpcion, Character teclaNecesaria) {
         if (textoOpciones.contains(textoOpcion)) // si ya fue agregada, que no agregue de vuelta
             return;
 
         if (teclaNecesaria!=null) {
 
-            teclaNecesaria = Character.toUpperCase(teclaNecesaria); // siempre mayusculas!
+            teclaNecesaria = Character.toUpperCase(teclaNecesaria); // siempre mayúsculas!
 
             // si la tecla ya fue utilizada para otra opcion
             if (teclaOpciones.contains(teclaNecesaria)) {
-                // TODO: tirar exception que la tecla ya fue utilizada
+                throw new TeclaYaUtilizadaException("La tecla ya fue utilizada por otra opción en este menu.");
             }
 
             // quitar la tecla de la lista de teclas disponibles
@@ -87,7 +87,7 @@ public final class MenuOpciones {
                     idTeclaSiguiente++;
 
                 } catch (IndexOutOfBoundsException e) {
-                    // TODO: tirar excepcion que no quedaron mas teclas para todas las opciones
+                    throw new SobrecargaTeclasException("Demasiadas opciones para el menu (quedó sin teclas para que el usuario presione)");
                 }
 
                 teclasMapeadas.add(teclaEncontrada);
