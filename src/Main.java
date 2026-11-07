@@ -15,6 +15,7 @@ void main() {
         switch (estado) {
 
             case INICIAR_SESION:
+                menu.agregarOpcion("prueba prueba","iniciarSesion:prueba");
                 break;
 
             // ...
@@ -38,11 +39,14 @@ void main() {
 
         // código para recibir la acción del usuario
 
-        switch (estado) {
+        switch (menu.encontrarOpcion(accion)) {
 
-            case INICIAR_SESION:
+            // GuiEstados.INICIAR_SESION
+            case "iniciarSesion:prueba":
+                System.out.println("seleccionado prueba");
                 break;
 
+            case null:
             default:
                 break;
         }

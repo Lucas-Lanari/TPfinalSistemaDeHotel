@@ -1,11 +1,9 @@
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public final class MenuOpciones {
 
-    // textoOpciones y teclaOpciones comparten el mismo index para cada opcion.
-
-    private ArrayList<String> textoOpciones;
-    private ArrayList<Character> teclaOpciones;
+    private LinkedHashSet<Opciones> opciones; // ordenado por orden de agregación y no permite repeticiones
 
     private ArrayList<Character> teclasDisponibles;
 
@@ -17,8 +15,7 @@ public final class MenuOpciones {
     // inicializa (o reinicializa) todos los valores del menu, por si el usuario quiere reutilizar la misma variable
     public void reiniciarMenu() {
 
-        textoOpciones.clear();
-        teclaOpciones.clear();
+        opciones.clear();
 
         // crear la lista de teclas disponibles (sacadas de teclasUsables)
 
@@ -32,8 +29,7 @@ public final class MenuOpciones {
     }
 
     public MenuOpciones() {
-        textoOpciones = new ArrayList<>();
-        teclaOpciones = new ArrayList<>();
+        opciones = new LinkedHashSet<>();
 
         teclasDisponibles = new ArrayList<>();
 
@@ -43,8 +39,8 @@ public final class MenuOpciones {
     // teclaNecesaria puede ser null.
     // Si teclaNecesaria es un carácter válido, entonces el usuario deberá tipear ese carácter hardcodeado en el código para seleccionar esa opción.
     // Si teclaNecesaria es null, entonces la tecla se generará automáticamente en tiempo de ejecución buscando en la lista de caracteres NO usados (teclasDisponibles).
-    public void agregarOpcion(String textoOpcion, Character teclaNecesaria) {
-        if (textoOpciones.contains(textoOpcion)) // si ya fue agregada, que no agregue de vuelta
+    public void agregarOpcion(String textoOpcion, String nombreInternoOpcion, Character teclaNecesaria) {
+        if (opciones.contains(new Opciones(nombreInternoOpcion))) // si ya fue agregada, que no agregue de vuelta
             return;
 
         if (teclaNecesaria!=null) {
@@ -52,7 +48,7 @@ public final class MenuOpciones {
             teclaNecesaria = Character.toUpperCase(teclaNecesaria); // siempre mayúsculas!
 
             // si la tecla ya fue utilizada para otra opcion
-            if (teclaOpciones.contains(teclaNecesaria)) {
+            if (opciones.contains(new Opciones(teclaNecesaria))) {
                 throw new TeclaYaUtilizadaException("La tecla ya fue utilizada por otra opción en este menu.");
             }
 
@@ -60,12 +56,11 @@ public final class MenuOpciones {
             teclasDisponibles.remove(teclaNecesaria);
         }
 
-        textoOpciones.add(textoOpcion);
-        teclaOpciones.add(teclaNecesaria);
+        opciones.add(new Opciones(nombreInternoOpcion, textoOpcion, teclaNecesaria));
     }
 
-    public void agregarOpcion(String opcion) {
-        agregarOpcion(opcion,null);
+    public void agregarOpcion(String textoOpcion, String nombreInternoOpcion) {
+        agregarOpcion(textoOpcion, nombreInternoOpcion,null);
     }
 
     private ArrayList<Character> recibirMapeoTeclas() {
@@ -74,7 +69,9 @@ public final class MenuOpciones {
 
         int idTeclaSiguiente = 0;
 
-        for (Character tecla : teclaOpciones) {
+        for (Opciones opcion : opciones) {
+
+            Character tecla = opcion.getTeclaAPresionar();
 
             if (tecla!=null) {
                 teclasMapeadas.add(tecla);
@@ -106,12 +103,12 @@ public final class MenuOpciones {
         StringBuilder out = new StringBuilder();
 
         int idx = 0;
-
-        for (String opcion : textoOpciones) {
+        for (Opciones opcion : opciones) {
             out.append(teclasMapeadas.get(idx));
             out.append(": ");
-            out.append(opcion);
+            out.append(opcion.getTextoAMostrar());
             out.append('\n');
+
             idx++;
         }
 
@@ -124,11 +121,12 @@ public final class MenuOpciones {
 
         ArrayList<Character> teclasMapeadas = recibirMapeoTeclas();
 
+        int idx = 0;
+        for (Opciones opcion : opciones) {
+            if (teclaRecibida == teclasMapeadas.get(idx))
+                return opcion.getNombreInterno();
 
-        for (int i=0;i<teclasMapeadas.size();i++) {
-            if (teclasMapeadas.get(i) == teclaRecibida) {
-                return textoOpciones.get(i);
-            }
+            idx++;
         }
 
         return null;
@@ -139,9 +137,9 @@ public final class MenuOpciones {
 /*
     MenuOpciones menu = new MenuOpciones();
 
-    menu.agregarOpcion("hola");
-    menu.agregarOpcion("holo");
-    menu.agregarOpcion("salir",'X');
+    menu.agregarOpcion("hola que tal", "hola");
+    menu.agregarOpcion("holo? No, es hola!", "holo");
+    menu.agregarOpcion("Salir", "salir", 'X');
 
     System.out.println(menu.mostrarOpciones());
     System.out.println(menu.encontrarOpcion('b')); // retorna "holo"
