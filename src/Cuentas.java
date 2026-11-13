@@ -1,12 +1,15 @@
-public abstract class Cuentas {
-    private int id;
-    private int dni;
-    private String nombre;
-    private String nombreUsuario;
-    private String contrasenia;
-    private boolean estaEliminado;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-    public Cuentas(int id, int dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
+public abstract class Cuentas {
+    protected int id;
+    protected String dni;
+    protected String nombre;
+    protected String nombreUsuario;
+    protected String contrasenia;
+    protected boolean estaEliminado;
+
+    public Cuentas(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
         this.dni = dni;
         this.nombre = nombre;
@@ -15,35 +18,38 @@ public abstract class Cuentas {
         this.estaEliminado = estaEliminado;
     }
 
+    public Cuentas(ResultSet resultadoCuenta) throws SQLException {
+        this(
+                resultadoCuenta.getInt("idCuenta"),
+                resultadoCuenta.getString("dni"),
+                resultadoCuenta.getString("nombre"),
+                resultadoCuenta.getString("nombreUsuario"),
+                resultadoCuenta.getString("contrasenia"),
+                resultadoCuenta.getBoolean("estaEliminado")
+        );
+    }
+
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getDni() {
+    public String getDni() {
         return dni;
-    }
-
-    public void setDni(int dni) {
-        this.dni = dni;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public String getNombreUsuario() {
         return nombreUsuario;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public boolean getEstaEliminado() {
+        return estaEliminado;
     }
 }
