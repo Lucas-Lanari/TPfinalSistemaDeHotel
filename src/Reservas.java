@@ -4,12 +4,19 @@ import java.util.HashSet;
 public class Reservas {
     private int id;
     private String habitacion;
-
+    HashSet<String> dniIntegrantes;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private EstadoReserva estado;
 
-
+    public Reservas(int id, String habitacion, LocalDateTime checkIn, LocalDateTime checkOut, EstadoReserva estado) {
+        this.id = id;
+        this.habitacion = habitacion;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.estado = estado;
+        dniIntegrantes = new HashSet<>();
+    }
 
     ///GETTERS Y SETTERS
     public int getId() {
