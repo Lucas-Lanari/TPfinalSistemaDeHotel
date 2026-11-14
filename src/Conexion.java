@@ -588,11 +588,28 @@ public abstract class Conexion {
 
     }
 
+    public static Reservas cargarReserva(ResultSet resultados) throws SQLException {
+        String sqlListarDniIntegrantes = "SELECT * FROM DniIntegrantes WHERE idDniIntegrantes = ?";
+
+        Reservas reserva = new Reservas(resultados);
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sqlListarDniIntegrantes)) {
+            ps.setInt(1,reserva.getId());
+
+            ResultSet resultadoDnis = ps.executeQuery();
+
+            while (resultadoDnis.next()) {
+                reserva.agregarDniIntegrante(resultadoDnis.getString("dni"));
+            }
+        }
+
+        return reserva;
+    }
 
     public static HashSet<Reservas> listarReservas() throws SQLException {
 
         String sql = "SELECT * FROM Reservas";
-        String sqlListarDniIntegrantes = "SELECT * FROM DniIntegrantes WHERE idDniIntegrantes = ?";
 
         HashSet<Reservas> out = new HashSet<>();
 
@@ -603,19 +620,7 @@ public abstract class Conexion {
 
             while (resultados.next()) {
 
-                Reservas reserva = new Reservas(resultados);
-
-                try (PreparedStatement ps = conexion.prepareStatement(sqlListarDniIntegrantes)) {
-                    ps.setInt(1,reserva.getId());
-
-                    ResultSet resultadoDnis = ps.executeQuery();
-
-                    while (resultadoDnis.next()) {
-                        reserva.agregarDniIntegrante(resultadoDnis.getString("dni"));
-                    }
-
-
-                }
+                Reservas reserva = cargarReserva(resultados);
 
                 out.add(reserva);
             }
