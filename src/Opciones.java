@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public final class Opciones {
 
 
@@ -39,8 +41,10 @@ public final class Opciones {
 
         Opciones otroOp = (Opciones) otro;
 
-        if (nombreInterno.equalsIgnoreCase(otroOp.getNombreInterno()))
-            return true;
+        if (nombreInterno!=null && otroOp.getNombreInterno()!=null) {
+            if (nombreInterno.equalsIgnoreCase(otroOp.getNombreInterno()))
+                return true;
+        }
 
         if (teclaAPresionar!=null && otroOp.getTeclaAPresionar()!=null) {
             if (teclaAPresionar == otroOp.getTeclaAPresionar())
@@ -52,7 +56,7 @@ public final class Opciones {
 
     @Override
     public int hashCode() {
-        return nombreInterno.hashCode();
+        return Objects.hash(nombreInterno,teclaAPresionar);
     }
 
     // getters
