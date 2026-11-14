@@ -1,8 +1,13 @@
+package Clases;
+
+import Enumeradores.EstadoReserva;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
+
 public class Reservas {
     private int id;
+    private int idHabitacion;
     private String habitacion;
     HashSet<String> dniIntegrantes;
     private LocalDateTime checkIn;
@@ -25,6 +30,14 @@ public class Reservas {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdHabitacion() {
+        return idHabitacion;
+    }
+
+    public void setIdHabitacion(int idHabitacion) {
+        this.idHabitacion = idHabitacion;
     }
 
     public String getHabitacion() {
