@@ -149,34 +149,49 @@ public abstract class Conexion {
     }
 
     public boolean crearCuenta(Cuentas cuenta) {
+        if (cuenta.getId()!=null) // si ya fue agregado, fallar
+            return false;
 
         String sqlGuardarCuenta = """
         INSERT IGNORE INTO cuentas
-        (idCuenta, nombreUsuario, nombre, dni, contrasenia,
+            (nombreUsuario, nombre, dni, contrasenia,
          estaEliminado, rol)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
         """;
 
         try (Connection conexion = crearConexion()) {
 
             conexion.setAutoCommit(false);
 
+            int idResultante;
+
             try {
                 try (PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
 
-                    ps.setInt(1, cuenta.getId());
-                    ps.setString(2, cuenta.getNombreUsuario());
-                    ps.setString(3, cuenta.getNombre());
-                    ps.setString(4, cuenta.getDni());
-                    ps.setString(5, cuenta.getContrasenia());
-                    ps.setBoolean(6, cuenta.getEstaEliminado());
-                    ps.setString(7, cuenta.getRol());
+                    ps.setString(1, cuenta.getNombreUsuario());
+                    ps.setString(2, cuenta.getNombre());
+                    ps.setString(3, cuenta.getDni());
+                    ps.setString(4, cuenta.getContrasenia());
+                    ps.setBoolean(5, cuenta.getEstaEliminado());
+                    ps.setString(6, cuenta.getRol());
 
                     if (ps.executeUpdate() == 0) {
                         conexion.rollback();
                         return false;
                     }
+
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            idResultante = rs.getInt(1);
+                        } else {
+                            conexion.rollback();
+                            return false;
+                        }
+                    }
+
                 }
+
+                cuenta.setId(idResultante);
 
                 if (cuenta instanceof Clientes cliente) {
 
@@ -188,6 +203,92 @@ public abstract class Conexion {
 
                     try (PreparedStatement psDatoAdicional =
                                  conexion.prepareStatement(sqlGuardarDatoAdicional)) {
+
+                        psDatoAdicional.setInt(1, cliente.getId());
+                        psDatoAdicional.setString(2, cliente.getPaisOrigen());
+                        psDatoAdicional.setString(3, cliente.getDomicilioOrigen());
+
+                        if (psDatoAdicional.executeUpdate() == 0) {
+                            conexion.rollback();
+                            return false;
+                        }
+                    }
+
+
+                } else if (cuenta instanceof Admins) {
+                    // FUNCIONALIDAD FUTURA
+
+                } else if (cuenta instanceof Staff) {
+                    // FUNCIONALIDAD FUTURA
+
+                } else {
+                    conexion.rollback();
+                    return false;
+                }
+
+                conexion.commit();
+                return true;
+
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean actualizarCuenta(Cuentas cuenta) {
+        if (cuenta.getId()==null)
+            return false;
+
+        String sqlActualizarCuenta = """
+        UPDATE cuentas
+        SET nombreUsuario = ?,
+            nombre = ?,
+            dni = ?,
+            contrasenia = ?,
+            estaEliminado = ?,
+            rol = ?
+        WHERE idCuenta = ?
+        """;
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            try {
+                try (PreparedStatement ps = conexion.prepareStatement(sqlActualizarCuenta)) {
+
+                    ps.setString(1, cuenta.getNombreUsuario());
+                    ps.setString(2, cuenta.getNombre());
+                    ps.setString(3, cuenta.getDni());
+                    ps.setString(4, cuenta.getContrasenia());
+                    ps.setBoolean(5, cuenta.getEstaEliminado());
+                    ps.setString(6, cuenta.getRol());
+                    ps.setInt(7, cuenta.getId());
+
+                    if (ps.executeUpdate() == 0) {
+                        conexion.rollback();
+                        return false;
+                    }
+                }
+
+                if (cuenta instanceof Clientes cliente) {
+
+                    String sqlActualizarDatoAdicional = """
+                    INSERT INTO DatosAdicionalesClientes
+                    (idCuenta, paisOrigen, domicilioOrigen)
+                    VALUES (?, ?, ?)
+                    ON CONFLICT (idCuenta)
+                    DO UPDATE SET
+                        paisOrigen = EXCLUDED.paisOrigen,
+                        domicilioOrigen = EXCLUDED.domicilioOrigen
+                    """;
+
+                    try (PreparedStatement psDatoAdicional =
+                                 conexion.prepareStatement(sqlActualizarDatoAdicional)) {
 
                         psDatoAdicional.setInt(1, cliente.getId());
                         psDatoAdicional.setString(2, cliente.getPaisOrigen());
@@ -223,7 +324,35 @@ public abstract class Conexion {
         }
     }
 
-    public static Cuentas buscarCuentaPorId(int idCuenta) throws SQLException {
+    public boolean eliminarCuenta(Cuentas cuenta, boolean eliminado) {
+        if (cuenta.getId()==null)
+            return false;
+
+        String sqlActualizarCuenta = """
+        UPDATE cuentas
+        SET estaEliminado = ?
+        WHERE idCuenta = ?
+        """;
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sqlActualizarCuenta)) {
+
+                    ps.setBoolean(1, eliminado);
+                    ps.setInt(2, cuenta.getId());
+
+                    if (ps.executeUpdate() == 0) {
+                        return false;
+                    }
+
+                    cuenta.setEstaEliminado(eliminado);
+                    return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+
+    public static Cuentas buscarCuenta(int idCuenta) throws SQLException {
 
         String sql = "SELECT * FROM Cuentas WHERE idCuenta = ?;";
 

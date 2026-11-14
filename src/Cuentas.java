@@ -29,7 +29,7 @@ public abstract class Cuentas {
         );
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -54,4 +54,29 @@ public abstract class Cuentas {
     }
 
     public abstract String getRol();
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
+    public void setEstaEliminado(boolean estaEliminado) {
+        this.estaEliminado = estaEliminado;
+    }
 }

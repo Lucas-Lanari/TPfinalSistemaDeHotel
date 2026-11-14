@@ -32,7 +32,7 @@ public class Clientes extends Cuentas{
     }
 
 
-    ///GETTERS (sin setters: read-only)
+    ///GETTERS Y SETTERS
     public void setDomicilioOrigen(String domicilioOrigen) {
         this.domicilioOrigen = domicilioOrigen;
     }
