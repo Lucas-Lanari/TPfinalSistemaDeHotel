@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.HashSet;
 
 public abstract class Conexion {
 
@@ -566,6 +567,31 @@ public abstract class Conexion {
         }
 
     }
+
+
+    public static HashSet<Reservas> listarReservas() throws SQLException {
+
+        String sql = "SELECT * FROM Reservas";
+
+        HashSet<Reservas> out = new HashSet<>();
+
+        try (Connection conexion = crearConexion();
+             Statement stmt = conexion.createStatement()) {
+
+            ResultSet resultados = stmt.executeQuery(sql);
+
+            while (resultados.next()) {
+                out.add(new Reservas(resultados));
+            }
+        }
+
+        return out;
+    }
+
+
+
+
+
 
 }
 
