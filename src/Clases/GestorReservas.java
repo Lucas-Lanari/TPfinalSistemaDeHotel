@@ -41,9 +41,10 @@ public class GestorReservas extends Contenedor<Reservas> {
         //agregamos las reservas donde se aparezca el dni del pasajero
         for (Reservas actual : lista) {
             for (String dni : actual.dniIntegrantes) {
-                if (dniPasajero.equals(dni))
+                if (dniPasajero.equals(dni)) {
                     respuesta.append(actual.toString());
                     respuesta.append("\n");
+                }
             }
         }
 
