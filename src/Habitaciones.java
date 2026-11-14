@@ -26,7 +26,7 @@ public class Habitaciones {
 
 
     ///GETTERS Y SETTERS
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -82,7 +82,7 @@ public abstract class Conexion {
 
     // CUENTAS
 
-    private static Cuentas cargarCuenta(ResultSet resultadoCuenta) throws SQLException {
+    public static Cuentas cargarCuenta(ResultSet resultadoCuenta) throws SQLException {
 
         Cuentas retorno = null;
 
@@ -135,6 +135,22 @@ public abstract class Conexion {
     public static ResultSet listarCuentas() throws SQLException {
 
         String sql = "SELECT * FROM Cuentas";
+
+        ResultSet resultados;
+
+        try (Connection conexion = crearConexion();
+             Statement stmt = conexion.createStatement()) {
+
+            resultados = stmt.executeQuery(sql);
+
+        }
+
+        return resultados;
+    }
+
+    public static ResultSet listarCuentasEliminadas() throws SQLException {
+
+        String sql = "SELECT * FROM Cuentas WHERE estaEliminado = TRUE  ";
 
         ResultSet resultados;
 
@@ -372,6 +388,27 @@ public abstract class Conexion {
 
     }
 
+    public static Cuentas buscarCuentaPorNombre(String nombre) throws SQLException {
+
+        String sql = "SELECT * FROM Cuentas WHERE nombreUsuario = ?;";
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1,nombre);
+
+            ResultSet resultadoEncontrado = ps.executeQuery();
+
+            if (!resultadoEncontrado.next())
+                return null;
+
+            return cargarCuenta(resultadoEncontrado);
+
+        }
+
+    }
+
+
     // HABITACIONES
 
     public static ResultSet listarHabitaciones() throws SQLException {
@@ -388,6 +425,126 @@ public abstract class Conexion {
         }
 
         return resultados;
+    }
+
+    public static ResultSet buscarHabitacionesPorPiso(int piso) throws SQLException {
+
+        String sql = "SELECT * FROM Habitaciones WHERE piso = ?";
+
+        ResultSet resultados;
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setInt(1,piso);
+
+            resultados = ps.executeQuery(sql);
+
+        }
+
+        return resultados;
+    }
+
+    public static ResultSet buscarHabitacionesRazonOcupada(RazonesOcupada razon) throws SQLException {
+
+        String sql = "SELECT * FROM Habitaciones WHERE razonOcupada = ?";
+
+        ResultSet resultados;
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1,razon.name());
+
+            resultados = ps.executeQuery(sql);
+
+        }
+
+        return resultados;
+    }
+
+    public boolean crearHabitacion(Habitaciones habitacion) {
+        if (habitacion.getId()!=null) // si ya fue agregado, fallar
+            return false;
+
+        String sqlGuardarCuenta = """
+        INSERT IGNORE INTO Habitaciones
+            (piso, numeroDepartamento, razonOcupada)
+        VALUES (?, ?, ?)
+        """;
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
+
+            int idResultante;
+
+            ps.setInt(1, habitacion.getPiso());
+            ps.setInt(2, habitacion.getNumeroDepartamento());
+            ps.setString(3, habitacion.getOcupacion().name());
+
+            if (ps.executeUpdate() == 0) {
+                return false;
+            }
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idResultante = rs.getInt(1);
+                } else {
+                    return false;
+                }
+            }
+
+            habitacion.setId(idResultante);
+
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean actualizarHabitacion(Habitaciones habitacion) {
+        if (habitacion.getId()==null) // no fue  agregado, fallar
+            return false;
+
+        String sqlGuardarCuenta = """
+        UPDATE HABITACIONES SET
+            piso = ?, numeroDepartamento = ?, razonOcupada = ?
+        WHERE idHabitacion = ?
+        """;
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
+
+            int idResultante;
+
+            ps.setInt(1, habitacion.getPiso());
+            ps.setInt(2, habitacion.getNumeroDepartamento());
+            ps.setString(3, habitacion.getOcupacion().name());
+
+            ps.setInt(4, habitacion.getId());
+
+            if (ps.executeUpdate() == 0) {
+                return false;
+            }
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idResultante = rs.getInt(1);
+                } else {
+                    return false;
+                }
+            }
+
+            habitacion.setId(idResultante);
+
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public boolean eliminarHabitacion(Habitaciones habitacion) {
+
     }
 
     public static Habitaciones buscarHabitacionPorId(int idHabitacion) throws SQLException {
