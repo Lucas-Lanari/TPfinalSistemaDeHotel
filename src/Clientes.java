@@ -26,6 +26,11 @@ public class Clientes extends Cuentas{
         this.domicilioOrigen = null;
     }
 
+    @Override
+    public String getRol() {
+        return RolesCuenta.CLIENTE.name();
+    }
+
 
     ///GETTERS (sin setters: read-only)
     public void setDomicilioOrigen(String domicilioOrigen) {

@@ -11,4 +11,9 @@ public class Admins extends Cuentas{
         super(resultadoCuenta);
     }
 
+    @Override
+    public String getRol() {
+        return RolesCuenta.ADMINISTRADOR.name();
+    }
+
 }

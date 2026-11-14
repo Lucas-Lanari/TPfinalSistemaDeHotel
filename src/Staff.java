@@ -11,4 +11,9 @@ public class Staff extends Cuentas{
         super(resultadoCuenta);
     }
 
+    @Override
+    public String getRol() {
+        return RolesCuenta.STAFF.name();
+    }
+
 }

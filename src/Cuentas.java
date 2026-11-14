@@ -52,4 +52,6 @@ public abstract class Cuentas {
     public boolean getEstaEliminado() {
         return estaEliminado;
     }
+
+    public abstract String getRol();
 }

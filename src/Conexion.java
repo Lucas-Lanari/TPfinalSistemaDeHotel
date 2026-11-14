@@ -148,6 +148,81 @@ public abstract class Conexion {
         return resultados;
     }
 
+    public boolean crearCuenta(Cuentas cuenta) {
+
+        String sqlGuardarCuenta = """
+        INSERT IGNORE INTO cuentas
+        (idCuenta, nombreUsuario, nombre, dni, contrasenia,
+         estaEliminado, rol)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            try {
+                try (PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
+
+                    ps.setInt(1, cuenta.getId());
+                    ps.setString(2, cuenta.getNombreUsuario());
+                    ps.setString(3, cuenta.getNombre());
+                    ps.setString(4, cuenta.getDni());
+                    ps.setString(5, cuenta.getContrasenia());
+                    ps.setBoolean(6, cuenta.getEstaEliminado());
+                    ps.setString(7, cuenta.getRol());
+
+                    if (ps.executeUpdate() == 0) {
+                        conexion.rollback();
+                        return false;
+                    }
+                }
+
+                if (cuenta instanceof Clientes cliente) {
+
+                    String sqlGuardarDatoAdicional = """
+                    INSERT IGNORE INTO DatosAdicionalesClientes
+                    (idCuenta, paisOrigen, domicilioOrigen)
+                    VALUES (?, ?, ?)
+                    """;
+
+                    try (PreparedStatement psDatoAdicional =
+                                 conexion.prepareStatement(sqlGuardarDatoAdicional)) {
+
+                        psDatoAdicional.setInt(1, cliente.getId());
+                        psDatoAdicional.setString(2, cliente.getPaisOrigen());
+                        psDatoAdicional.setString(3, cliente.getDomicilioOrigen());
+
+                        if (psDatoAdicional.executeUpdate() == 0) {
+                            conexion.rollback();
+                            return false;
+                        }
+                    }
+
+                } else if (cuenta instanceof Admins) {
+                    // FUNCIONALIDAD FUTURA
+
+                } else if (cuenta instanceof Staff) {
+                    // FUNCIONALIDAD FUTURA
+
+                } else {
+                    conexion.rollback();
+                    return false;
+                }
+
+                conexion.commit();
+                return true;
+
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     public static Cuentas buscarCuentaPorId(int idCuenta) throws SQLException {
 
         String sql = "SELECT * FROM Cuentas WHERE idCuenta = ?;";
