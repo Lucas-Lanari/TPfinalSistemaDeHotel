@@ -8,6 +8,7 @@ import Excepciones.HabitacionNoDisponibleException;
 import Excepciones.IdReservaInexistenteException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class GestorReservas extends Contenedor<Reservas> {
 
@@ -15,6 +16,15 @@ public class GestorReservas extends Contenedor<Reservas> {
         for (Reservas actual : lista) {
             if ( idReserva != actual.getId() && ( fechaInicio.isBefore(actual.getCheckOut()) && fechaFin.isAfter(actual.getCheckIn()) ) )
                 throw new FechaNoDisponibleException();
+        }
+
+        return true;
+    }
+
+    public boolean fechaDisponibleSinId(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        for (Reservas actual : lista) {
+            if ( fechaInicio.isBefore(actual.getCheckOut()) && fechaFin.isAfter(actual.getCheckIn()) )
+                return false;
         }
 
         return true;
@@ -98,6 +108,19 @@ public class GestorReservas extends Contenedor<Reservas> {
         }
 
         return true;
+    }
+
+    //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
+    public ArrayList<Integer> buscarHabitacionesParaReserva(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        ArrayList<Integer> arrHabitaciones = new ArrayList<>();
+
+        for (Reservas actual : lista) {
+            if (fechaDisponibleSinId(fechaInicio, fechaFin)) {
+                arrHabitaciones.add(actual.getIdHabitacion());
+            }
+        }
+
+        return arrHabitaciones;
     }
 
 }
