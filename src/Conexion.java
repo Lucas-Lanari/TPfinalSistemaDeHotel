@@ -1,3 +1,4 @@
+import Clases.Habitacion;
 import Clases.Reserva;
 
 import java.sql.*;
@@ -21,7 +22,7 @@ public abstract class Conexion {
 
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS Cuentas(
-                    idCuenta INT PRIMARY KEY,
+                    idCuenta INT PRIMARY KEY AUTO_INCREMENT,
                     nombreUsuario VARCHAR(50) UNIQUE,
                     nombre VARCHAR(50),
                     dni VARCHAR(9) UNIQUE,
@@ -33,7 +34,7 @@ public abstract class Conexion {
 
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS DatosAdicionalesClientes(
-                    idCuenta INT PRIMARY KEY,
+                    idCuenta INT PRIMARY KEY AUTO_INCREMENT,
                     paisOrigen VARCHAR(50),
                     domicilioOrigen VARCHAR(50),
                     CONSTRAINT fk_idCuenta
@@ -44,7 +45,7 @@ public abstract class Conexion {
 
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS Habitaciones(
-                    idHabitacion INT PRIMARY KEY,
+                    idHabitacion INT PRIMARY KEY AUTO_INCREMENT,
                     piso INT,
                     numeroDepartamento INT,
                     razonOcupada VARCHAR(50)
@@ -61,7 +62,7 @@ public abstract class Conexion {
 
             stmt.execute("""
                     CREATE TABLE IF NOT EXISTS Reserva(
-                    idReserva INT PRIMARY KEY,
+                    idReserva INT PRIMARY KEY AUTO_INCREMENT,
                     idHabitacion INT,
                     CONSTRAINT fk_idHabitacion
                         FOREIGN KEY (idHabitacion)
@@ -135,20 +136,24 @@ public abstract class Conexion {
         return retorno;
     }
 
-    public static ResultSet listarCuentas() throws SQLException {
+    public static HashSet<Cuentas> listarCuentas() throws SQLException {
 
         String sql = "SELECT * FROM Cuentas";
 
-        ResultSet resultados;
+        HashSet<Cuentas> out = new HashSet<>();
 
         try (Connection conexion = crearConexion();
              Statement stmt = conexion.createStatement()) {
 
-            resultados = stmt.executeQuery(sql);
+            ResultSet resultados = stmt.executeQuery(sql);
+
+            while (resultados.next()) {
+                out.add(cargarCuenta(resultados));
+            }
 
         }
 
-        return resultados;
+        return out;
     }
 
     public static ResultSet listarCuentasEliminadas() throws SQLException {
@@ -414,56 +419,69 @@ public abstract class Conexion {
 
     // HABITACIONES
 
-    public static ResultSet listarHabitaciones() throws SQLException {
+    public static HashSet<Habitaciones> listarHabitaciones() throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones";
 
-        ResultSet resultados;
+        HashSet<Habitaciones> out = new HashSet<>();
 
         try (Connection conexion = crearConexion();
              Statement stmt = conexion.createStatement()) {
 
-            resultados = stmt.executeQuery(sql);
+            ResultSet resultados = stmt.executeQuery(sql);
+
+            while (resultados.next()) {
+                out.add(new Habitaciones(resultados));
+            }
 
         }
 
-        return resultados;
+        return out;
     }
 
-    public static ResultSet buscarHabitacionesPorPiso(int piso) throws SQLException {
+    public static HashSet<Habitaciones> buscarHabitacionesPorPiso(int piso) throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones WHERE piso = ?";
 
-        ResultSet resultados;
+        HashSet<Habitaciones> out = new HashSet<>();
 
         try (Connection conexion = crearConexion();
              PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setInt(1,piso);
 
-            resultados = ps.executeQuery(sql);
+            ResultSet resultados = ps.executeQuery(sql);
+
+            while (resultados.next()) {
+                out.add(new Habitaciones(resultados));
+            }
+
 
         }
 
-        return resultados;
+        return out;
     }
 
-    public static ResultSet buscarHabitacionesRazonOcupada(RazonesOcupada razon) throws SQLException {
+    public static HashSet<Habitaciones> buscarHabitacionesRazonOcupada(RazonesOcupada razon) throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones WHERE razonOcupada = ?";
 
-        ResultSet resultados;
+        HashSet<Habitaciones> out = new HashSet<>();
 
         try (Connection conexion = crearConexion();
              PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1,razon.name());
 
-            resultados = ps.executeQuery(sql);
+            ResultSet resultados = ps.executeQuery(sql);
+
+            while (resultados.next()) {
+                out.add(new Habitaciones(resultados));
+            }
 
         }
 
-        return resultados;
+        return out;
     }
 
     public boolean crearHabitacion(Habitaciones habitacion) {
