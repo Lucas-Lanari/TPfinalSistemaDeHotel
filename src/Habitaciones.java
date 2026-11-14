@@ -1,3 +1,7 @@
+import javax.xml.transform.Result;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Habitaciones {
     private int id;
     private int piso;
@@ -9,6 +13,15 @@ public class Habitaciones {
         this.piso = piso;
         this.numeroDepartamento = numeroDepartamento;
         this.ocupacion = ocupacion;
+    }
+
+    public Habitaciones(ResultSet resultado) throws SQLException {
+        this(
+                resultado.getInt("idHabitacion"),
+                resultado.getInt("piso"),
+                resultado.getInt("numeroDepartamento"),
+                RazonesOcupada.valueOf(resultado.getString("razonOcupada"))
+        );
     }
 
 

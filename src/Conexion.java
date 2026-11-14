@@ -49,17 +49,14 @@ public abstract class Conexion {
 
         Cuentas retorno = null;
 
-
-
-
-        // codigo para cargar datos adicionales para cada tipo de cuenta
-
         int idCuenta = resultadoCuenta.getInt("idCuenta");
         RolesCuenta rol = RolesCuenta.valueOf(resultadoCuenta.getString("rol"));
 
         String sqlDatosAdicionalesCLiente = "SELECT * FROM DatosAdicionalesClientes WHERE idCuenta = ?;";
 
         try (Connection conexion = crearConexion()) {
+
+            // cargar datos adicionales para cada tipo de cuenta
 
             switch(rol) {
                 case ADMINISTRADOR:
@@ -114,7 +111,7 @@ public abstract class Conexion {
         return resultados;
     }
 
-    public static String buscarCuentaPorId(int idCuenta) throws SQLException {
+    public static Cuentas buscarCuentaPorId(int idCuenta) throws SQLException {
 
         String sql = "SELECT * FROM Cuentas WHERE idCuenta = ?;";
 
@@ -128,12 +125,7 @@ public abstract class Conexion {
             if (!resultadoEncontrado.next())
                 return null;
 
-            String resultado = null; // CAMBIARLO A LA CLASE CUENTA
-
-            // CODIGO PARA RECIBIR LOS DATOS DE CUENTA DESDE EL RESULTSET
-
-
-            return resultado;
+            return cargarCuenta(resultadoEncontrado);
 
         }
 
@@ -157,7 +149,7 @@ public abstract class Conexion {
         return resultados;
     }
 
-    public static String buscarHabitacionPorId(int idHabitacion) throws SQLException {
+    public static Habitaciones buscarHabitacionPorId(int idHabitacion) throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones WHERE idHabitacion = ?;";
 
@@ -171,15 +163,18 @@ public abstract class Conexion {
             if (!resultadoEncontrado.next())
                 return null;
 
-            String resultado = null; // CAMBIARLO A LA CLASE HABITACION
-
-            // CODIGO PARA RECIBIR LOS DATOS DE HABITACION DESDE EL RESULTSET
-
-
-            return resultado;
+            return new Habitaciones(resultadoEncontrado);
 
         }
 
     }
 
 }
+
+/*
+INSERT INTO cuentas (id, att1, att2)
+VALUES (?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    att1 = excluded.att1,
+    att2 = excluded.att2;
+ */
