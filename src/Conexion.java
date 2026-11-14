@@ -10,35 +10,72 @@ public abstract class Conexion {
         return DriverManager.getConnection(url,name,pass);
     }
 
+    // SIEMPRE INICIALIZAR AL PRINCIPIO DEL MAIN
     public static void inicializar() throws SQLException {
 
         try (Connection conexion = crearConexion();
              Statement stmt = conexion.createStatement()) {
 
             stmt.execute("""
-                    
-                    
-                    """); // CREATE TABLE IF NOT EXISTS
+                    CREATE TABLE IF NOT EXISTS Cuentas(
+                    idCuenta INT PRIMARY KEY,
+                    nombreUsuario VARCHAR(50) UNIQUE,
+                    nombre VARCHAR(50),
+                    dni VARCHAR(9) UNIQUE,
+                    contrasenia VARCHAR(50),
+                    estaEliminado BOOLEAN,
+                    rol VARCHAR(20)
+                    );
+                    """);
 
             stmt.execute("""
-                    
-                    
-                    """); // CREATE TABLE IF NOT EXISTS
+                    CREATE TABLE IF NOT EXISTS DatosAdicionalesClientes(
+                    idCuenta INT PRIMARY KEY,
+                    paisOrigen VARCHAR(50),
+                    domicilioOrigen VARCHAR(50),
+                    CONSTRAINT fk_idCuenta
+                        FOREIGN KEY (idCuenta)
+                        REFERENCES Cuentas(idCuenta)
+                    );
+                    """);
 
             stmt.execute("""
-                    
-                    
-                    """); // CREATE TABLE IF NOT EXISTS
+                    CREATE TABLE IF NOT EXISTS Habitaciones(
+                    idHabitacion INT PRIMARY KEY,
+                    piso INT,
+                    numeroDepartamento INT,
+                    razonOcupada VARCHAR(50)
+                    );
+                    """);
 
             stmt.execute("""
-                    
-                    
-                    """); // CREATE TABLE IF NOT EXISTS
+                    CREATE TABLE IF NOT EXISTS DniIntegrantes(
+                    idDniIntegrantes INT,
+                    dni VARCHAR(9),
+                    CONSTRAINT pk_idDniIntegrantes_dni  PRIMARY KEY(idDniIntegrantes,dni)
+                    );
+                    """);
 
             stmt.execute("""
-                    
-                    
-                    """); // CREATE TABLE IF NOT EXISTS
+                    CREATE TABLE IF NOT EXISTS Reserva(
+                    idReserva INT PRIMARY KEY,
+                    idHabitacion INT,
+                    CONSTRAINT fk_idHabitacion
+                        FOREIGN KEY (idHabitacion)
+                        REFERENCES Habitaciones(idHabitacion),
+                    idCuentaResponsable INT,
+                    CONSTRAINT fk_idCuentaResponsable
+                        FOREIGN KEY (idCuentaResponsable)
+                        REFERENCES Cuentas(idCuenta),
+                    idDniIntegrantes INT,
+                    CONSTRAINT fk_idDniIntegrantes
+                        FOREIGN KEY (idDniIntegrantes)
+                        REFERENCES DniIntegrantes(idDniIntegrantes),
+                    checkIn DATE,
+                    checkOut DATE,
+                    estadoReserva VARCHAR(50)
+                    );
+                    """);
 
         }
     }
