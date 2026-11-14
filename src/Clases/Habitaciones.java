@@ -1,3 +1,7 @@
+package Clases;
+
+import Enumeradores.RazonesOcupada;
+
 public class Habitaciones {
     private int id;
     private int piso;
@@ -44,4 +48,5 @@ public class Habitaciones {
     public void setOcupacion(RazonesOcupada ocupacion) {
         this.ocupacion = ocupacion;
     }
+
 }

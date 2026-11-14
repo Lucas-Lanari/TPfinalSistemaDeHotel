@@ -5,25 +5,25 @@ import java.util.List;
 
 public class Contenedor<T> {
 
-    private List<T> elementos;
+    protected List<T> lista;
 
     public Contenedor() {
-        this.elementos = new ArrayList<>();
+        this.lista = new ArrayList<>();
     }
 
     public void agregar(T nuevo) {
-        elementos.add(nuevo);
+        lista.add(nuevo);
     }
 
     public void eliminar(T elemento) {
-        elementos.remove(elemento);
+        lista.remove(elemento);
     }
 
     public String mostrar() {
 
         StringBuilder respuesta = new StringBuilder();
 
-        for (T elemento : elementos) {
+        for (T elemento : lista) {
             respuesta.append(elemento.toString());  //usa el toString propio del elemento de la coleccion
             respuesta.append("\n");
         }

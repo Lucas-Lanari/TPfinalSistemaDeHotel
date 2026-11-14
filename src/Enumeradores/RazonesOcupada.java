@@ -1,3 +1,5 @@
+package Enumeradores;
+
 public enum RazonesOcupada {
     LIBRE, LIMPIANDO, REPARANDO, DESINFECTANDO, SIN_ESPECIFICAR;
 }
