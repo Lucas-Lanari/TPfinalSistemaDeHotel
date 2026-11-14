@@ -1,3 +1,5 @@
+import Clases.Reserva;
+
 import java.sql.*;
 import java.util.HashSet;
 
@@ -572,6 +574,7 @@ public abstract class Conexion {
     public static HashSet<Reservas> listarReservas() throws SQLException {
 
         String sql = "SELECT * FROM Reservas";
+        String sqlListarDniIntegrantes = "SELECT * FROM DniIntegrantes WHERE idDniIntegrantes = ?";
 
         HashSet<Reservas> out = new HashSet<>();
 
@@ -581,7 +584,22 @@ public abstract class Conexion {
             ResultSet resultados = stmt.executeQuery(sql);
 
             while (resultados.next()) {
-                out.add(new Reservas(resultados));
+
+                Reservas reserva = new Reservas(resultados);
+
+                try (PreparedStatement ps = conexion.prepareStatement(sqlListarDniIntegrantes)) {
+                    ps.setInt(1,reserva.getId());
+
+                    ResultSet resultadoDnis = ps.executeQuery();
+
+                    while (resultadoDnis.next()) {
+                        reserva.agregarDniIntegrante(resultadoDnis.getString("dni"));
+                    }
+
+
+                }
+
+                out.add(reserva);
             }
         }
 

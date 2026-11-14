@@ -65,4 +65,16 @@ public class Reservas {
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
     }
+
+    public void agregarDniIntegrante(String dni) {
+        dniIntegrantes.add(dni);
+    }
+
+    public void quitarDniIntegrante(String dni) {
+        dniIntegrantes.remove(dni);
+    }
+
+    public HashSet<String> listarDniIntegrantes() {
+        return dniIntegrantes;
+    }
 }
