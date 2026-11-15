@@ -61,4 +61,20 @@ public class Habitaciones {
     public void setOcupacion(RazonesOcupada ocupacion) {
         this.ocupacion = ocupacion;
     }
+
+    @Override
+    public String toString() {
+        return "Habitacion nro "+numeroDepartamento+" piso "+ piso +
+                "\nid: "+ id +
+                "\nEstado: "+ ocupacion +"\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Habitaciones))
+            return false;
+
+        Habitaciones objHabitacion = (Habitaciones) obj;
+        return this.id.equals(objHabitacion.id);
+    }
 }

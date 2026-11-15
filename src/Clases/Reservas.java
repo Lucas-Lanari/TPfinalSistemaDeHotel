@@ -91,4 +91,36 @@ public class Reservas {
     public HashSet<String> listarDniIntegrantes() {
         return dniIntegrantes;
     }
+
+    public String listarIntegrantes() {
+        StringBuilder integrantes = new StringBuilder();
+
+        for(String dni : dniIntegrantes) {
+            integrantes.append(dni);
+            integrantes.append("\n");
+        }
+
+        return integrantes.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Reserva:\n"+
+                "id reserva: "+ id +
+                "\nid habitacion: "+ idHabitacion +
+                "\nid CuentaResponsable: "+ idCuentaResponsable +
+                "\n"+ this.listarDniIntegrantes() +
+                "\nFecha check in: "+ checkIn +
+                "\nFecha check out: "+ checkOut +
+                "\nEstado de la reserva: "+ estado + "\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Reservas))
+            return false;
+
+        Reservas objReserva = (Reservas) obj;
+        return this.id.equals(objReserva.id);
+    }
 }
