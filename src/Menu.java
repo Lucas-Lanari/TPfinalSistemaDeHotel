@@ -104,6 +104,35 @@ public class Menu {
             case "irCuentas":
                 return GuiEstados.GESTION_CUENTAS;
 
+
+            case "verDisponibles":
+                mostrarTexto(gestorHotel.listarHabitacionesDisponibles(), "No hay habitaciones disponibles.");
+                return estado;
+
+            case "verTodas":
+                mostrarTexto(gestorHotel.listarHabitaciones(), "No hay habitaciones cargadas.");
+                return estado;
+
+            case "crearCuenta":
+                gestorHotel.agregarCuenta();
+                return estado;
+
+            case "eliminarCuenta":
+                gestorHotel.eliminarCuenta();
+                return estado;
+
+            case "nuevaReserva":
+                gestorHotel.agregarReserva();
+                return estado;
+
+            case "modificarReserva":
+                gestorHotel.modificarReserva();
+                return estado;
+
+            case "cancelarReserva":
+                gestorHotel.eliminarReserva();
+                return estado;
+
             case "logout":
                 gestorHotel.logout();
                 return GuiEstados.INICIAR_SESION;
@@ -112,7 +141,6 @@ public class Menu {
                 return GuiEstados.TERMINADO;
 
             default:
-                System.out.println("Esta opción todavía no está implementada.");
                 return estado;
         }
     }
@@ -137,4 +165,13 @@ public class Menu {
             }
         }
     }
+
+    //funciones auxiliares
+    private void mostrarTexto(String texto, String mensajeVacio) {
+        if (texto == null || texto.isEmpty())
+            System.out.println(mensajeVacio);
+        else
+            System.out.println(texto);
     }
+
+}
