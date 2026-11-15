@@ -1,8 +1,15 @@
 package Gestores;
 
 import Clases.Cuentas;
+import Excepciones.ContraseniaIncorrectaException;
+import Excepciones.ErrorLoginException;
+import Excepciones.UsuarioEliminadoException;
+import Excepciones.UsuarioInexistenteException;
 
 public class GestorCuentas extends Contenedor<Cuentas> {
+
+    private Cuentas cuentaActual; //para el logueo
+
 
     public Cuentas buscarCuentaPorId(Integer id) {
         for (Cuentas actual: lista) {
@@ -90,6 +97,32 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         return false;
     }
 
+
+
+    public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
+        Cuentas cuenta = buscarCuentaPorUsuario(nombreUsuario);
+
+        if (cuenta==null) {
+            throw new UsuarioInexistenteException("El usuario no existe.");
+        }
+        if (cuenta.getEstaEliminado()){
+            throw new ContraseniaIncorrectaException("Contraseña incorrecta.");
+        }
+        if(!cuenta.getContrasenia().equals(contrasenia)){
+            throw new UsuarioEliminadoException("El usuario fue eliminado.");
+        }
+
+        cuentaActual = cuenta;
+        return cuenta;
+    }
+
+    public void logout(){
+        cuentaActual=null;
+    }
+
+    public Cuentas getCuentaActual(){
+        return cuentaActual;
+    }
 
 
 }
