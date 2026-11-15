@@ -5,6 +5,7 @@ import Enumeradores.RazonesOcupada;
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class Habitaciones {
     private Integer id;
@@ -76,5 +77,10 @@ public class Habitaciones {
 
         Habitaciones objHabitacion = (Habitaciones) obj;
         return this.id.equals(objHabitacion.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }
