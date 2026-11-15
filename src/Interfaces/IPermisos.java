@@ -8,4 +8,5 @@ public interface IPermisos {
     boolean puedeCancelarReserva();
     boolean puedeHacerCheckInOut();
     boolean puedeHacerBackup();
+    boolean puedeVerReservas();
 }
