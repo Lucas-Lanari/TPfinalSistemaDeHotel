@@ -26,4 +26,44 @@ public class Admins extends Cuentas {
         return RolesCuenta.ADMINISTRADOR.name();
     }
 
+    @Override
+    public boolean puedeCrearCuenta() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeEliminarCuenta() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeCrearReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeModificarReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeCancelarReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeHacerCheckInOut() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeHacerBackup() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeVerReservas() {
+        return true;
+    }
+
 }

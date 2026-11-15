@@ -59,4 +59,45 @@ public class Clientes extends Cuentas {
     public String getDomicilioOrigen() {
         return domicilioOrigen;
     }
+
+    @Override
+    public boolean puedeCrearCuenta() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeEliminarCuenta() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeCrearReserva() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeModificarReserva() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeCancelarReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeHacerCheckInOut() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeHacerBackup() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeVerReservas() {
+        return false;
+    }
+
 }
