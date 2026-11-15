@@ -159,7 +159,7 @@ public abstract class Conexion {
         return out;
     }
 
-    public static ResultSet listarCuentasEliminadas() throws SQLException {
+/*    public static ResultSet listarCuentasEliminadas() throws SQLException {
 
         String sql = "SELECT * FROM Cuentas WHERE estaEliminado = TRUE  ";
 
@@ -173,7 +173,7 @@ public abstract class Conexion {
         }
 
         return resultados;
-    }
+    }*/
 
     public boolean crearCuenta(Cuentas cuenta) {
         if (cuenta.getId()!=null) // si ya fue agregado, fallar
@@ -379,7 +379,7 @@ public abstract class Conexion {
     }
 
 
-    public static Cuentas buscarCuenta(int idCuenta) throws SQLException {
+/*    public static Cuentas buscarCuenta(int idCuenta) throws SQLException {
 
         String sql = "SELECT * FROM Cuentas WHERE idCuenta = ?;";
 
@@ -417,7 +417,7 @@ public abstract class Conexion {
 
         }
 
-    }
+    }*/
 
 
     // HABITACIONES
@@ -442,7 +442,7 @@ public abstract class Conexion {
         return out;
     }
 
-    public static HashSet<Habitaciones> buscarHabitacionesPorPiso(int piso) throws SQLException {
+/*    public static HashSet<Habitaciones> buscarHabitacionesPorPiso(int piso) throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones WHERE piso = ?";
 
@@ -485,7 +485,7 @@ public abstract class Conexion {
         }
 
         return out;
-    }
+    }*/
 
     public boolean crearHabitacion(Habitaciones habitacion) {
         if (habitacion.getId()!=null) // si ya fue agregado, fallar
@@ -567,11 +567,54 @@ public abstract class Conexion {
         }
     }
 
-    public boolean eliminarHabitacion(Habitaciones habitacion) {
-        return false;
+    public boolean eliminarHabitacion(Habitaciones habitacion) throws SQLException{
+        if (habitacion.getId()==null)
+            return false;
+
+
+        String sqlListarReservas = "SELECT * FROM Reservas WHERE idHabitacion = ?";
+
+        String sqlEliminarHabitacion = "DELETE FROM Habitaciones WHERE idHabitacion = ?";
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement ps = conexion.prepareStatement(sqlListarReservas)) {
+                ps.setInt(1,habitacion.getId());
+
+                try (ResultSet resultados = ps.executeQuery()) {
+                    while (resultados.next()) {
+                        Reservas reserva = cargarReserva(resultados);
+                        if (!eliminarReserva(reserva,conexion)) {
+                            conexion.rollback();
+                            return false;
+                        }
+                    }
+                }
+
+                try (PreparedStatement psEliminarHabitacion = conexion.prepareStatement(sqlEliminarHabitacion)) {
+                    psEliminarHabitacion.setInt(1,habitacion.getId());
+
+                    if (psEliminarHabitacion.executeUpdate() == 0) {
+                        conexion.rollback();
+                        return false;
+                    }
+                }
+
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+            conexion.commit();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
-    public static Habitaciones buscarHabitacionPorId(int idHabitacion) throws SQLException {
+/*    public static Habitaciones buscarHabitacionPorId(int idHabitacion) throws SQLException {
 
         String sql = "SELECT * FROM Habitaciones WHERE idHabitacion = ?;";
 
@@ -589,7 +632,7 @@ public abstract class Conexion {
 
         }
 
-    }
+    }*/
 
     public static Reservas cargarReserva(ResultSet resultados) throws SQLException {
         String sqlListarDniIntegrantes = "SELECT * FROM DniIntegrantes WHERE idDniIntegrantes = ?";
@@ -632,7 +675,7 @@ public abstract class Conexion {
         return out;
     }
 
-    public static HashSet<Reservas> buscarReservasPorIdHabitacion(int idHabitacion) throws SQLException {
+/*    public static HashSet<Reservas> buscarReservasPorIdHabitacion(int idHabitacion) throws SQLException {
 
         String sql = "SELECT * FROM Reservas WHERE idHabitacion = ?";
 
@@ -654,9 +697,9 @@ public abstract class Conexion {
         }
 
         return out;
-    }
+    }*/
 
-    public static HashSet<Reservas> buscarReservasPorEstado(EstadoReserva estado) throws SQLException {
+/*    public static HashSet<Reservas> buscarReservasPorEstado(EstadoReserva estado) throws SQLException {
 
         String sql = "SELECT * FROM Reservas WHERE estadoReserva = ?";
 
@@ -678,24 +721,25 @@ public abstract class Conexion {
         }
 
         return out;
+    }*/
+
+    private static void eliminarIntegrantesReserva(Reservas reserva, Connection conexion) throws SQLException {
+        String sqlEliminar = "DELETE FROM DniIntegrantes WHERE idDniIntegrantes = ?";
+
+        try (PreparedStatement psEliminar = conexion.prepareStatement(sqlEliminar)) {
+            psEliminar.setInt(1, reserva.getId());
+            psEliminar.executeUpdate();
+        }
     }
 
     private static void guardarIntegrantesReserva(Reservas reserva,Connection conexion) throws SQLException {
 
-        String sqlEliminar = "DELETE FROM DniIntegrantes WHERE idDniIntegrantes = ?";
         String sqlAgregar = "INSERT INTO DniIntegrantes(idDniIntegrantes,dni) VALUES (?, ?)";
 
-        try (PreparedStatement psEliminar = conexion.prepareStatement(sqlEliminar)) {
-
-            psEliminar.setInt(1,reserva.getId());
-
-            psEliminar.execute();
-
-            for (String dni : reserva.listarDniIntegrantes()) {
-                try (PreparedStatement psAgregar = conexion.prepareStatement(sqlAgregar)) {
-                    psAgregar.setInt(1,reserva.getId());
-                    psAgregar.setString(2,dni);
-                }
+        for (String dni : reserva.listarDniIntegrantes()) {
+            try (PreparedStatement psAgregar = conexion.prepareStatement(sqlAgregar)) {
+                psAgregar.setInt(1,reserva.getId());
+                psAgregar.setString(2,dni);
             }
         }
     }
@@ -748,6 +792,92 @@ public abstract class Conexion {
                 throw e;
             }
 
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public static boolean actualizarReserva(Reservas reserva) {
+        if (reserva.getId()==null)
+            return false;
+
+        String sql = """
+                UPDATE Reservas SET
+                idHabitacion = ?, idCuentaResponsable = ?, checkIn = ?, checkOut = ?, estadoReserva = ?
+                WHERE idReserva = ?
+                """;
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+                ps.setInt(1,reserva.getIdHabitacion());
+                ps.setInt(2,reserva.getIdCuentaResponsable());
+                ps.setDate(3,reserva.getCheckIn());
+                ps.setDate(4,reserva.getCheckOut());
+                ps.setString(5,reserva.getEstado().name());
+                ps.setInt(6,reserva.getId());
+
+                if (ps.executeUpdate()==0) {
+                    conexion.rollback();
+                    return false;
+                }
+
+                eliminarIntegrantesReserva(reserva,conexion);
+                guardarIntegrantesReserva(reserva,conexion);
+
+                conexion.commit();
+                return true;
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    private static boolean eliminarReserva(Reservas reserva, Connection conexion) throws SQLException {
+        if (reserva.getId()==null)
+            return false;
+
+        String sql = """
+                DELETE FROM Reservas WHERE idReserva = ?
+                """;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1,reserva.getId());
+
+            eliminarIntegrantesReserva(reserva,conexion);
+
+            if (ps.executeUpdate()==0) {
+                conexion.rollback();
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    public static boolean eliminarReserva(Reservas reserva) {
+        if (reserva.getId()==null)
+            return false;
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            boolean retorno = eliminarReserva(reserva,conexion);
+
+            if (retorno) {
+                conexion.commit();
+            }
+
+            return retorno;
 
         } catch (SQLException e) {
             return false;
