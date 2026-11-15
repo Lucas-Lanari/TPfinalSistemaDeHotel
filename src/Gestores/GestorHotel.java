@@ -3,6 +3,7 @@ package Gestores;
 import Clases.Cuentas;
 import Clases.Habitaciones;
 import Enumeradores.RazonesOcupada;
+import Excepciones.ErrorLoginException;
 import Excepciones.IdHabitacionNoEncontradoException;
 
 import java.time.LocalDateTime;
@@ -118,6 +119,18 @@ public class GestorHotel {
 
     public boolean modificarEstadoEliminado(Integer id, boolean nuevoEstado) {
         return gestorCuentas.modificarEstadoEliminado(id, nuevoEstado);
+    }
+
+    public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
+        return gestorCuentas.login(nombreUsuario, contrasenia);
+    }
+
+    public void logout() {
+        gestorCuentas.logout();
+    }
+
+    public Cuentas getCuentaActual() {
+        return gestorCuentas.getCuentaActual();
     }
 
     //metodos del gestorReservas

@@ -3,7 +3,7 @@ import Clases.Clientes;
 import Clases.Cuentas;
 import Clases.Staff;
 import Enumeradores.GuiEstados;
-import Gestores.GestorCuentas;
+import Gestores.GestorHotel;
 import Excepciones.ErrorLoginException;
 import java.util.Scanner;
 
@@ -11,11 +11,11 @@ public class Menu {
 
     private GuiEstados estado = GuiEstados.INICIAR_SESION;
     private GuiEstados menuPrincipal;      // guarda el menu al que lleva la opción volver en los gestores
-    private GestorCuentas gestorCuentas;
+    private GestorHotel gestorHotel;
     private Scanner scanner = new Scanner(System.in);
 
-    public Menu(GestorCuentas gestorCuentas) {
-        this.gestorCuentas = gestorCuentas;
+    public Menu(GestorHotel gestorHotel) {
+        this.gestorHotel = gestorHotel;
     }
 
     private MenuOpciones armarMenu(){
@@ -78,7 +78,7 @@ public class Menu {
                 Cuentas cuentaActual;
 
                 try {
-                    cuentaActual = gestorCuentas.login(usuario, contrasenia);
+                    cuentaActual = gestorHotel.login(usuario, contrasenia);
                 } catch (ErrorLoginException e) {
                     System.out.println(e.getMessage());
                     return estado;
@@ -105,7 +105,7 @@ public class Menu {
                 return GuiEstados.GESTION_HABITACIONES;
 
             case "logout":
-                gestorCuentas.logout();
+                gestorHotel.logout();
                 return GuiEstados.INICIAR_SESION;
 
             case "salir":

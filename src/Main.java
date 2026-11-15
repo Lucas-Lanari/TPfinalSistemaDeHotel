@@ -2,22 +2,22 @@ import Clases.Cuentas;
 import Conexiones.Conexion;
 import Enumeradores.GuiEstados;
 import Gestores.GestorCuentas;
-
 import java.sql.SQLException;
-import java.util.Scanner;
+import Gestores.GestorHotel;
 
 public class Main {
     public static void main(String[] args) {
 
+        GestorHotel gestorHotel = new GestorHotel();
+
         try {
             Conexion.inicializar();
 
-            GestorCuentas gestorCuentas = new GestorCuentas();
             for (Cuentas c : Conexion.listarCuentas()) {
-                gestorCuentas.agregar(c);
+                gestorHotel.agregarCuenta(c);
             }
 
-            new Menu(gestorCuentas).ejecutar();
+            new Menu(gestorHotel).ejecutar();
 
         } catch (SQLException e) {
             System.out.println("Error con la base de datos: " + e.getMessage());
