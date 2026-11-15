@@ -7,12 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Habitaciones {
-    private int id;
+    private Integer id;
     private int piso;
     private int numeroDepartamento;
     private RazonesOcupada ocupacion;
 
-    public Habitaciones(int id, int piso, int numeroDepartamento, RazonesOcupada ocupacion) {
+    public Habitaciones(Integer id, int piso, int numeroDepartamento, RazonesOcupada ocupacion) {
         this.id = id;
         this.piso = piso;
         this.numeroDepartamento = numeroDepartamento;
@@ -30,7 +30,7 @@ public class Habitaciones {
 
 
     ///GETTERS Y SETTERS
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

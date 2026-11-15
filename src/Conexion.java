@@ -1,5 +1,7 @@
-import Clases.Habitacion;
-import Clases.Reserva;
+import Clases.Habitaciones;
+import Clases.Reservas;
+import Enumeradores.EstadoReserva;
+import Enumeradores.RazonesOcupada;
 
 import javax.swing.text.html.HTMLDocument;
 import java.sql.*;
@@ -566,7 +568,7 @@ public abstract class Conexion {
     }
 
     public boolean eliminarHabitacion(Habitaciones habitacion) {
-
+        return false;
     }
 
     public static Habitaciones buscarHabitacionPorId(int idHabitacion) throws SQLException {
