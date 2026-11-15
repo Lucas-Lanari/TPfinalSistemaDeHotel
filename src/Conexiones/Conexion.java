@@ -10,9 +10,9 @@ import java.util.HashSet;
 
 public abstract class Conexion {
 
-    private final static String url = "";
-    private final static String name = "";
-    private final static String pass = "";
+    private final static String url = "jdbc:mysql://localhost:3306/hotel";
+    private final static String name = "root";
+    private final static String pass = "Hola123!";
 
     private static Connection crearConexion() throws SQLException {
         return DriverManager.getConnection(url,name,pass);
@@ -65,7 +65,7 @@ public abstract class Conexion {
                     """);
 
             stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS Reserva(
+                    CREATE TABLE IF NOT EXISTS Reservas(
                     idReserva INT PRIMARY KEY AUTO_INCREMENT,
                     idHabitacion INT,
                     CONSTRAINT fk_idHabitacion
@@ -75,12 +75,8 @@ public abstract class Conexion {
                     CONSTRAINT fk_idCuentaResponsable
                         FOREIGN KEY (idCuentaResponsable)
                         REFERENCES Cuentas(idCuenta),
-                    idDniIntegrantes INT,
-                    CONSTRAINT fk_idDniIntegrantes
-                        FOREIGN KEY (idDniIntegrantes)
-                        REFERENCES DniIntegrantes(idDniIntegrantes),
-                    checkIn DATE,
-                    checkOut DATE,
+                    checkIn DATETIME,
+                    checkOut DATETIME,
                     estadoReserva VARCHAR(50)
                     );
                     """);
@@ -176,7 +172,7 @@ public abstract class Conexion {
         return resultados;
     }*/
 
-    public boolean crearCuenta(Cuentas cuenta) {
+    public static boolean crearCuenta(Cuentas cuenta) {
         if (cuenta.getId()!=null) // si ya fue agregado, fallar
             return false;
 
@@ -267,7 +263,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean actualizarCuenta(Cuentas cuenta) {
+    public static boolean actualizarCuenta(Cuentas cuenta) {
         if (cuenta.getId()==null)
             return false;
 
@@ -352,7 +348,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean eliminarCuenta(Cuentas cuenta, boolean eliminado) {
+    public static boolean eliminarCuenta(Cuentas cuenta, boolean eliminado) {
         if (cuenta.getId()==null)
             return false;
 
@@ -488,7 +484,7 @@ public abstract class Conexion {
         return out;
     }*/
 
-    public boolean crearHabitacion(Habitaciones habitacion) {
+    public static boolean crearHabitacion(Habitaciones habitacion) {
         if (habitacion.getId()!=null) // si ya fue agregado, fallar
             return false;
 
@@ -527,7 +523,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean actualizarHabitacion(Habitaciones habitacion) {
+    public static boolean actualizarHabitacion(Habitaciones habitacion) {
         if (habitacion.getId()==null) // no fue  agregado, fallar
             return false;
 
@@ -568,7 +564,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean eliminarHabitacion(Habitaciones habitacion) throws SQLException{
+    public static boolean eliminarHabitacion(Habitaciones habitacion) throws SQLException{
         if (habitacion.getId()==null)
             return false;
 
@@ -762,8 +758,8 @@ public abstract class Conexion {
             try (PreparedStatement ps = conexion.prepareStatement(sql)) {
                 ps.setInt(1,reserva.getIdHabitacion());
                 ps.setInt(2,reserva.getIdCuentaResponsable());
-                ps.setDate(3,reserva.getCheckIn());
-                ps.setDate(4,reserva.getCheckOut());
+                ps.setObject(3,reserva.getCheckIn());
+                ps.setObject(4,reserva.getCheckOut());
                 ps.setString(5,reserva.getEstado().name());
 
                 if (ps.executeUpdate()==0) {
@@ -816,8 +812,8 @@ public abstract class Conexion {
             try (PreparedStatement ps = conexion.prepareStatement(sql)) {
                 ps.setInt(1,reserva.getIdHabitacion());
                 ps.setInt(2,reserva.getIdCuentaResponsable());
-                ps.setDate(3,reserva.getCheckIn());
-                ps.setDate(4,reserva.getCheckOut());
+                ps.setObject(3,reserva.getCheckIn());
+                ps.setObject(4,reserva.getCheckOut());
                 ps.setString(5,reserva.getEstado().name());
                 ps.setInt(6,reserva.getId());
 

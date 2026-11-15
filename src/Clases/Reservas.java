@@ -3,11 +3,10 @@ package Clases;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import Enumeradores.EstadoReserva;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 
 
 public class Reservas {
@@ -15,13 +14,14 @@ public class Reservas {
     private int idHabitacion;
     private int idCuentaResponsable;
     public HashSet<String> dniIntegrantes;
-    private Date checkIn;
-    private Date checkOut;
+    private LocalDateTime checkIn;
+    private LocalDateTime checkOut;
     private EstadoReserva estado;
 
-    public Reservas(Integer id, int idHabitacion, int idCuentaResponsable, Date checkIn, Date checkOut, EstadoReserva estado) {
+    public Reservas(Integer id, int idHabitacion, int idCuentaResponsable, LocalDateTime checkIn, LocalDateTime checkOut, EstadoReserva estado) {
         this.id = id;
         this.idHabitacion = idHabitacion;
+        this.idCuentaResponsable = idCuentaResponsable;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.estado = estado;
@@ -29,7 +29,7 @@ public class Reservas {
     }
 
     public Reservas(ResultSet resultado) throws SQLException {
-        this(resultado.getInt("idReserva"),resultado.getInt("idHabitacion"),resultado.getInt("idCuentaResponsable"),resultado.getDate("checkIn"),resultado.getDate("checkOut"),EstadoReserva.valueOf(resultado.getString("estadoReserva")));
+        this(resultado.getInt("idReserva"),resultado.getInt("idHabitacion"),resultado.getInt("idCuentaResponsable"),resultado.getObject("checkIn", LocalDateTime.class),resultado.getObject("checkOut", LocalDateTime.class),EstadoReserva.valueOf(resultado.getString("estadoReserva")));
     }
 
     ///GETTERS Y SETTERS
@@ -57,19 +57,19 @@ public class Reservas {
         this.idCuentaResponsable = idCuentaResponsable;
     }
 
-    public Date getCheckIn() {
+    public LocalDateTime getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(Date checkIn) {
+    public void setCheckIn(LocalDateTime checkIn) {
         this.checkIn = checkIn;
     }
 
-    public Date getCheckOut() {
+    public LocalDateTime getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(Date checkOut) {
+    public void setCheckOut(LocalDateTime checkOut) {
         this.checkOut = checkOut;
     }
 
@@ -91,42 +91,5 @@ public class Reservas {
 
     public HashSet<String> listarDniIntegrantes() {
         return dniIntegrantes;
-    }
-
-    public String listarIntegrantes() {
-        StringBuilder integrantes = new StringBuilder();
-
-        for(String dni : dniIntegrantes) {
-            integrantes.append(dni);
-            integrantes.append("\n");
-        }
-
-        return integrantes.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "Reserva:\n"+
-                "id reserva: "+ id +
-                "\nid habitacion: "+ idHabitacion +
-                "\nid CuentaResponsable: "+ idCuentaResponsable +
-                "\n"+ this.listarDniIntegrantes() +
-                "\nFecha check in: "+ checkIn +
-                "\nFecha check out: "+ checkOut +
-                "\nEstado de la reserva: "+ estado + "\n";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Reservas))
-            return false;
-
-        Reservas objReserva = (Reservas) obj;
-        return this.id.equals(objReserva.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
     }
 }
