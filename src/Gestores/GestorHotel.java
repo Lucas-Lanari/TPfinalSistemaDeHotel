@@ -121,6 +121,18 @@ public class GestorHotel {
         return gestorCuentas.modificarEstadoEliminado(id, nuevoEstado);
     }
 
+    public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
+        return gestorCuentas.login(nombreUsuario, contrasenia);
+    }
+
+    public void logout() {
+        gestorCuentas.logout();
+    }
+
+    public Cuentas getCuentaActual() {
+        return gestorCuentas.getCuentaActual();
+    }
+
     //metodos del gestorReservas
 
     public void agregarReserva(Reservas nuevo) {
