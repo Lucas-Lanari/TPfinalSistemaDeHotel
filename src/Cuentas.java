@@ -2,14 +2,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class Cuentas {
-    protected int id;
+    protected Integer id;
     protected String dni;
     protected String nombre;
     protected String nombreUsuario;
     protected String contrasenia;
     protected boolean estaEliminado;
 
-    public Cuentas(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
+    public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
         this.dni = dni;
         this.nombre = nombre;

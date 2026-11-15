@@ -5,16 +5,17 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 
 public class Reservas {
-    private int id;
-    private String habitacion;
+    private Integer id;
+    private int idHabitacion;
+    private int idCuentaResponsable;
     HashSet<String> dniIntegrantes;
     private Date checkIn;
     private Date checkOut;
     private EstadoReserva estado;
 
-    public Reservas(int id, String habitacion, Date checkIn, Date checkOut, EstadoReserva estado) {
+    public Reservas(Integer id, int idHabitacion, int idCuentaResponsable, Date checkIn, Date checkOut, EstadoReserva estado) {
         this.id = id;
-        this.habitacion = habitacion;
+        this.idHabitacion = idHabitacion;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.estado = estado;
@@ -22,11 +23,11 @@ public class Reservas {
     }
 
     public Reservas(ResultSet resultado) throws SQLException {
-        this(resultado.getInt(1),resultado.getString(2),resultado.getDate(4),resultado.getDate(5),EstadoReserva.valueOf(resultado.getString(6)));
+        this(resultado.getInt("idReserva"),resultado.getInt("idHabitacion"),resultado.getInt("idCuentaResponsable"),resultado.getDate("checkIn"),resultado.getDate("checkOut"),EstadoReserva.valueOf(resultado.getString("estadoReserva")));
     }
 
     ///GETTERS Y SETTERS
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -34,12 +35,20 @@ public class Reservas {
         this.id = id;
     }
 
-    public String getHabitacion() {
-        return habitacion;
+    public int getIdHabitacion() {
+        return idHabitacion;
     }
 
-    public void setHabitacion(String habitacion) {
-        this.habitacion = habitacion;
+    public void setIdHabitacion(int idHabitacion) {
+        this.idHabitacion = idHabitacion;
+    }
+
+    public int getIdCuentaResponsable() {
+        return idCuentaResponsable;
+    }
+
+    public void setIdCuentaResponsable(int idCuentaResponsable) {
+        this.idCuentaResponsable = idCuentaResponsable;
     }
 
     public Date getCheckIn() {

@@ -1,6 +1,7 @@
 import Clases.Habitacion;
 import Clases.Reserva;
 
+import javax.swing.text.html.HTMLDocument;
 import java.sql.*;
 import java.util.HashSet;
 
@@ -628,6 +629,130 @@ public abstract class Conexion {
 
         return out;
     }
+
+    public static HashSet<Reservas> buscarReservasPorIdHabitacion(int idHabitacion) throws SQLException {
+
+        String sql = "SELECT * FROM Reservas WHERE idHabitacion = ?";
+
+        HashSet<Reservas> out = new HashSet<>();
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setInt(1,idHabitacion);
+
+            ResultSet resultados = ps.executeQuery(sql);
+
+            while (resultados.next()) {
+
+                Reservas reserva = cargarReserva(resultados);
+
+                out.add(reserva);
+            }
+        }
+
+        return out;
+    }
+
+    public static HashSet<Reservas> buscarReservasPorEstado(EstadoReserva estado) throws SQLException {
+
+        String sql = "SELECT * FROM Reservas WHERE estadoReserva = ?";
+
+        HashSet<Reservas> out = new HashSet<>();
+
+        try (Connection conexion = crearConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1,estado.name());
+
+            ResultSet resultados = ps.executeQuery();
+
+            while (resultados.next()) {
+
+                Reservas reserva = cargarReserva(resultados);
+
+                out.add(reserva);
+            }
+        }
+
+        return out;
+    }
+
+    private static void guardarIntegrantesReserva(Reservas reserva,Connection conexion) throws SQLException {
+
+        String sqlEliminar = "DELETE FROM DniIntegrantes WHERE idDniIntegrantes = ?";
+        String sqlAgregar = "INSERT INTO DniIntegrantes(idDniIntegrantes,dni) VALUES (?, ?)";
+
+        try (PreparedStatement psEliminar = conexion.prepareStatement(sqlEliminar)) {
+
+            psEliminar.setInt(1,reserva.getId());
+
+            psEliminar.execute();
+
+            for (String dni : reserva.listarDniIntegrantes()) {
+                try (PreparedStatement psAgregar = conexion.prepareStatement(sqlAgregar)) {
+                    psAgregar.setInt(1,reserva.getId());
+                    psAgregar.setString(2,dni);
+                }
+            }
+        }
+    }
+
+    public static boolean agregarReserva(Reservas reserva) {
+        if (reserva.getId()!=null)
+            return false;
+
+        String sql = """
+                INSERT INTO Reservas
+                (idHabitacion, idCuentaResponsable, checkIn, checkOut, estadoReserva)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+
+        try (Connection conexion = crearConexion()) {
+
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+                ps.setInt(1,reserva.getIdHabitacion());
+                ps.setInt(2,reserva.getIdCuentaResponsable());
+                ps.setDate(3,reserva.getCheckIn());
+                ps.setDate(4,reserva.getCheckOut());
+                ps.setString(5,reserva.getEstado().name());
+
+                if (ps.executeUpdate()==0) {
+                    conexion.rollback();
+                    return false;
+                }
+
+                int idResultante;
+
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        idResultante = rs.getInt(1);
+                    } else {
+                        conexion.rollback();
+                        return false;
+                    }
+                }
+
+                reserva.setId(idResultante);
+
+                guardarIntegrantesReserva(reserva,conexion);
+
+                conexion.commit();
+                return true;
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+
 
 
 
