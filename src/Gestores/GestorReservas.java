@@ -32,7 +32,7 @@ public class GestorReservas extends Contenedor<Reservas> {
         return true;
     }
 
-    private String listarReservasPorHabitacion(int idHabitacion) {
+    public String listarReservasPorHabitacion(int idHabitacion) {
         StringBuilder respuesta = new StringBuilder();
         respuesta.append("Las reservas para la habitacion "+ idHabitacion + " son:\n");
 
@@ -46,7 +46,7 @@ public class GestorReservas extends Contenedor<Reservas> {
         return respuesta.toString();
     }
 
-    private String listarReservasPorPasajero(String dniPasajero) {
+    public String listarReservasPorPasajero(String dniPasajero) {
         StringBuilder respuesta = new StringBuilder();
         respuesta.append("Las reservas para el pasajero "+ dniPasajero + " son:\n");
 
