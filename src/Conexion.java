@@ -78,8 +78,8 @@ public abstract class Conexion {
                     CONSTRAINT fk_idDniIntegrantes
                         FOREIGN KEY (idDniIntegrantes)
                         REFERENCES DniIntegrantes(idDniIntegrantes),
-                    checkIn DATE,
-                    checkOut DATE,
+                    checkIn DATETIME,
+                    checkOut DATETIME,
                     estadoReserva VARCHAR(50)
                     );
                     """);
@@ -761,8 +761,8 @@ public abstract class Conexion {
             try (PreparedStatement ps = conexion.prepareStatement(sql)) {
                 ps.setInt(1,reserva.getIdHabitacion());
                 ps.setInt(2,reserva.getIdCuentaResponsable());
-                ps.setDate(3,reserva.getCheckIn());
-                ps.setDate(4,reserva.getCheckOut());
+                ps.setObject(3,reserva.getCheckIn());
+                ps.setObject(4,reserva.getCheckOut());
                 ps.setString(5,reserva.getEstado().name());
 
                 if (ps.executeUpdate()==0) {
@@ -815,8 +815,8 @@ public abstract class Conexion {
             try (PreparedStatement ps = conexion.prepareStatement(sql)) {
                 ps.setInt(1,reserva.getIdHabitacion());
                 ps.setInt(2,reserva.getIdCuentaResponsable());
-                ps.setDate(3,reserva.getCheckIn());
-                ps.setDate(4,reserva.getCheckOut());
+                ps.setObject(3,reserva.getCheckIn());
+                ps.setObject(4,reserva.getCheckOut());
                 ps.setString(5,reserva.getEstado().name());
                 ps.setInt(6,reserva.getId());
 

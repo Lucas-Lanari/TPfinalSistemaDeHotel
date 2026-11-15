@@ -29,7 +29,7 @@ public class Reservas {
     }
 
     public Reservas(ResultSet resultado) throws SQLException {
-        this(resultado.getInt("idReserva"),resultado.getInt("idHabitacion"),resultado.getInt("idCuentaResponsable"),resultado.getDate("checkIn"),resultado.getDate("checkOut"),EstadoReserva.valueOf(resultado.getString("estadoReserva")));
+        this(resultado.getInt("idReserva"),resultado.getInt("idHabitacion"),resultado.getInt("idCuentaResponsable"),resultado.getObject("checkIn", LocalDateTime.class),resultado.getObject("checkOut", LocalDateTime.class),EstadoReserva.valueOf(resultado.getString("estadoReserva")));
     }
 
     ///GETTERS Y SETTERS
