@@ -1,10 +1,12 @@
 package Clases;
 
+import Interfaces.IPermisos;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public abstract class Cuentas implements Comparable<Cuentas>{
+public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
     protected Integer id;
     protected String dni;
     protected String nombre;

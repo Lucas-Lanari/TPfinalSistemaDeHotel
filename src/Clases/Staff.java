@@ -20,4 +20,44 @@ public class Staff extends Cuentas {
         return RolesCuenta.STAFF.name();
     }
 
+    @Override
+    public boolean puedeCrearCuenta() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeEliminarCuenta() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeCrearReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeModificarReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeCancelarReserva() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeHacerCheckInOut() {
+        return true;
+    }
+
+    @Override
+    public boolean puedeHacerBackup() {
+        return false;
+    }
+
+    @Override
+    public boolean puedeVerReservas() {
+        return true;
+    }
+
 }
