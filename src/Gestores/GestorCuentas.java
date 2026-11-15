@@ -90,6 +90,6 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         return false;
     }
 
-    
+
 
 }
