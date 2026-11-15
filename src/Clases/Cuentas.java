@@ -2,6 +2,7 @@ package Clases;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public abstract class Cuentas implements Comparable<Cuentas>{
     protected Integer id;
@@ -104,5 +105,10 @@ public abstract class Cuentas implements Comparable<Cuentas>{
     @Override
     public int compareTo(Cuentas c) {
         return this.id.compareTo(c.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }

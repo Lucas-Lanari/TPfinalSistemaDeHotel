@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import Enumeradores.EstadoReserva;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 
 
 public class Reservas {
@@ -122,5 +123,10 @@ public class Reservas {
 
         Reservas objReserva = (Reservas) obj;
         return this.id.equals(objReserva.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }
