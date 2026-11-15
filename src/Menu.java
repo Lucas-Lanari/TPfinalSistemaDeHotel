@@ -3,6 +3,7 @@ import Clases.Clientes;
 import Clases.Cuentas;
 import Clases.Staff;
 import Enumeradores.GuiEstados;
+import Enumeradores.RolesCuenta;
 import Gestores.GestorHotel;
 import Excepciones.ErrorLoginException;
 import java.util.Scanner;
@@ -59,11 +60,26 @@ public class Menu {
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
+            case GESTION_CUENTAS:
+                menu.agregarOpcion("Crear cuenta", "crearCuenta");
+                menu.agregarOpcion("Modificar cuenta", "modifCuenta");
+                menu.agregarOpcion("Modificar permisos", "modifPermisos");
+                menu.agregarOpcion("Volver", "volver", 'X');
+                break;
+
             default:
                 break;
         }
 
         return menu;
+    }
+
+    private GuiEstados menuParaRol(RolesCuenta rol) {
+        return switch (rol) {
+            case ADMINISTRADOR -> GuiEstados.MENU_ADMIN;
+            case STAFF         -> GuiEstados.MENU_STAFF;
+            case CLIENTE       -> GuiEstados.MENU_CLIENTE;
+        };
     }
 
     private GuiEstados ejecutarOpcion(String opcion) {
@@ -84,15 +100,7 @@ public class Menu {
                     return estado;
                 }
 
-                if (cuentaActual instanceof Admins)
-                    menuPrincipal = GuiEstados.MENU_ADMIN;
-                else if (cuentaActual instanceof Staff)
-                    menuPrincipal = GuiEstados.MENU_STAFF;
-                else if (cuentaActual instanceof Clientes)
-                    menuPrincipal = GuiEstados.MENU_CLIENTE;
-                else
-                    return estado;   // tirar error
-
+                menuPrincipal = menuParaRol(RolesCuenta.valueOf(cuentaActual.getRol()));
                 return menuPrincipal;
 
             case "volver":
@@ -103,6 +111,9 @@ public class Menu {
 
             case "irHabitaciones":
                 return GuiEstados.GESTION_HABITACIONES;
+
+            case "irCuentas":
+                return GuiEstados.GESTION_CUENTAS;
 
             case "logout":
                 gestorHotel.logout();

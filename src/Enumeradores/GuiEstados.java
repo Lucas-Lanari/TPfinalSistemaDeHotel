@@ -7,7 +7,8 @@ public enum GuiEstados {
     MENU_ADMIN("Menú de Administrador"),
     MENU_STAFF("Menú de Staff"),
     GESTION_RESERVAS("Reservas"),
-    GESTION_HABITACIONES("Habitaciones");
+    GESTION_HABITACIONES("Habitaciones"),
+    GESTION_CUENTAS("Cuentas");
 
     private String nombreBonito;
 
