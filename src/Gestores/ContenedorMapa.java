@@ -34,8 +34,7 @@ public class ContenedorMapa<K, V> {
 
         return respuesta.toString();
     }
-
-    public V buscarPorClava(K clave) {
+    public V buscarPorClave(K clave) {
         return mapa.get(clave);
     }
 }
