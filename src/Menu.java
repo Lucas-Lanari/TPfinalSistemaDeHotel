@@ -50,16 +50,20 @@ public class Menu {
                 break;
 
             case GESTION_RESERVAS:
-                menu.agregarOpcion("Nueva reserva", "nuevaReserva");
-                menu.agregarOpcion("Check-in", "checkIn");
-                menu.agregarOpcion("Check-out", "checkOut");
+                if (gestorHotel.getCuentaActual().isPermisoCrearReserva())
+                    menu.agregarOpcion("Nueva reserva", "nuevaReserva");
+                if (gestorHotel.getCuentaActual().isPermisoModificarReserva())
+                    menu.agregarOpcion("Modificar reserva", "modificarReserva");
+                if (gestorHotel.getCuentaActual().isPermisoCancelarReserva())
+                    menu.agregarOpcion("Cancelar reserva", "cancelarReserva");
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
             case GESTION_CUENTAS:
-                menu.agregarOpcion("Crear cuenta", "crearCuenta");
-                menu.agregarOpcion("Modificar cuenta", "modifCuenta");
-                menu.agregarOpcion("Modificar permisos", "modifPermisos");
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta())
+                    menu.agregarOpcion("Crear cuenta", "crearCuenta");
+                if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                    menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
