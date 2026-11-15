@@ -1,8 +1,116 @@
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Scanner;
 
 public class Menu {
-    HashMap<String, String> opciones = new HashMap<>();
-    HashSet<String> ordenIdentificadores = new HashSet<>();
 
-}
+    private GuiEstados estado = GuiEstados.INICIAR_SESION;
+    private GuiEstados menuPrincipal;      // guarda el menu al que lleva la opción volver en los gestores
+    private Cuentas cuentaActual;
+
+    private MenuOpciones armarMenu(){
+        MenuOpciones menu = new MenuOpciones();
+
+        switch (estado){
+            case INICIAR_SESION:
+                menu.agregarOpcion("Ingresar", "login");
+                menu.agregarOpcion("Salir", "salir", 'X');
+                break;
+
+            case MENU_STAFF:
+                menu.agregarOpcion("Reservas", "irReservas");
+                menu.agregarOpcion("Habitaciones", "irHabitaciones");
+                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
+                break;
+
+            case MENU_CLIENTE:
+                menu.agregarOpcion("Mis reservas", "misReservas");
+                menu.agregarOpcion("Solicitar reserva", "solicitarReserva");
+                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
+                break;
+
+            case MENU_ADMIN:
+                menu.agregarOpcion("Gestionar cuentas", "irCuentas");
+                menu.agregarOpcion("Hacer backup", "backup");
+                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
+                break;
+
+            case GESTION_HABITACIONES:
+                menu.agregarOpcion("Ver disponibles", "verDisponibles");
+                menu.agregarOpcion("Ver ocupadas", "verOcupadas");
+                menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                menu.agregarOpcion("Volver", "volver", 'X');
+                break;
+
+            case GESTION_RESERVAS:
+                menu.agregarOpcion("Nueva reserva", "nuevaReserva");
+                menu.agregarOpcion("Check-in", "checkIn");
+                menu.agregarOpcion("Check-out", "checkOut");
+                menu.agregarOpcion("Volver", "volver", 'X');
+                break;
+
+            default:
+                break;
+        }
+
+        return menu;
+    }
+
+    private GuiEstados ejecutarOpcion(String opcion) {
+        switch (opcion){
+            case "login":
+                //iniciar sesion usando gestor cuenta -- cuentaActual = gestorCuentas.iniciarSesion(...);
+                //reemplazar instance of por un chequeo de getPermisos
+
+                if (cuentaActual instanceof Admins)
+                    menuPrincipal = GuiEstados.MENU_ADMIN;
+                else if (cuentaActual instanceof Staff)
+                    menuPrincipal = GuiEstados.MENU_STAFF;
+                else if (cuentaActual instanceof Clientes)
+                    menuPrincipal = GuiEstados.MENU_CLIENTE;
+                else
+                    return estado;   // tirar error
+
+                return menuPrincipal;
+
+            case "volver":
+                return menuPrincipal;
+
+            case "irReservas":
+                return GuiEstados.GESTION_RESERVAS;
+
+            case "irHabitaciones":
+                return GuiEstados.GESTION_HABITACIONES;
+
+            case "logout":
+                cuentaActual = null;
+                return GuiEstados.INICIAR_SESION;
+
+            case "salir":
+                return GuiEstados.TERMINADO;
+
+            default:
+                return estado;
+        }
+    }
+
+    public void ejecutar() {
+        Scanner scanner = new Scanner(System.in);
+        while (estado != GuiEstados.TERMINADO) {
+            System.out.println(estado.getNombreBonito());
+            MenuOpciones menu = armarMenu();
+
+            System.out.println(menu.mostrarOpciones());
+            System.out.print("? ");
+
+            String linea = scanner.nextLine().trim();
+            char tecla = linea.isEmpty() ? '-' : linea.charAt(0);
+
+            String opcion = menu.encontrarOpcion(tecla);
+
+            if (opcion == null) {
+                System.out.println("Opción inválida");
+            } else {
+                estado = ejecutarOpcion(opcion);
+            }
+        }
+    }
+    }
