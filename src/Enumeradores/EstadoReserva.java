@@ -1,3 +1,5 @@
+package Enumeradores;
+
 public enum EstadoReserva {
     TERMINADA("Terminada"), PENDIENTE("Pendiente"), ACTIVA("Activa");
 

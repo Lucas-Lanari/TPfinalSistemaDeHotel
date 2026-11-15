@@ -1,8 +1,13 @@
+package Clases;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import Enumeradores.EstadoReserva;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+
 
 public class Reservas {
     private Integer id;
