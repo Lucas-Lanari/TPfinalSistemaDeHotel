@@ -3,8 +3,8 @@ package Clases;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import Enumeradores.EstadoReserva;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
@@ -14,13 +14,14 @@ public class Reservas {
     private int idHabitacion;
     private int idCuentaResponsable;
     HashSet<String> dniIntegrantes;
-    private Date checkIn;
-    private Date checkOut;
+    private LocalDateTime checkIn;
+    private LocalDateTime checkOut;
     private EstadoReserva estado;
 
-    public Reservas(Integer id, int idHabitacion, int idCuentaResponsable, Date checkIn, Date checkOut, EstadoReserva estado) {
+    public Reservas(Integer id, int idHabitacion, int idCuentaResponsable, LocalDateTime checkIn, LocalDateTime checkOut, EstadoReserva estado) {
         this.id = id;
         this.idHabitacion = idHabitacion;
+        this.idCuentaResponsable = idCuentaResponsable;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.estado = estado;
@@ -56,19 +57,19 @@ public class Reservas {
         this.idCuentaResponsable = idCuentaResponsable;
     }
 
-    public Date getCheckIn() {
+    public LocalDateTime getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(Date checkIn) {
+    public void setCheckIn(LocalDateTime checkIn) {
         this.checkIn = checkIn;
     }
 
-    public Date getCheckOut() {
+    public LocalDateTime getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(Date checkOut) {
+    public void setCheckOut(LocalDateTime checkOut) {
         this.checkOut = checkOut;
     }
 
