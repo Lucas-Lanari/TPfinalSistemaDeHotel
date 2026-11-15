@@ -44,12 +44,15 @@ public class Menu {
 
             case GESTION_HABITACIONES:
                 menu.agregarOpcion("Ver disponibles", "verDisponibles");
-                menu.agregarOpcion("Ver ocupadas", "verOcupadas");
-                menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                if (gestorHotel.getCuentaActual().isPermisoCrearHabitacion()){
+                    menu.agregarOpcion("Ver ocupadas", "verOcupadas");
+                    menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                }
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
             case GESTION_RESERVAS:
+                menu.agregarOpcion("Ver reservas", "verReservas");
                 if (gestorHotel.getCuentaActual().isPermisoCrearReserva())
                     menu.agregarOpcion("Nueva reserva", "nuevaReserva");
                 if (gestorHotel.getCuentaActual().isPermisoModificarReserva())
@@ -61,9 +64,11 @@ public class Menu {
 
             case GESTION_CUENTAS:
                 if (gestorHotel.getCuentaActual().isPermisoCrearCuenta())
+                    menu.agregarOpcion("Ver cuentas", "verCuentas");
                     menu.agregarOpcion("Crear cuenta", "crearCuenta");
                 if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
                     menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
+                menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
@@ -111,6 +116,10 @@ public class Menu {
 
             case "verTodas":
                 mostrarTexto(gestorHotel.listarHabitaciones(), "No hay habitaciones cargadas.");
+                return estado;
+
+            case "verCuentas":
+                mostrarTexto(gestorHotel.listarCuentas(), "No hay cuentas cargadas.");
                 return estado;
 
             case "crearCuenta":

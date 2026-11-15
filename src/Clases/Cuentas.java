@@ -19,6 +19,8 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
     protected boolean permisoCrearReserva;
     protected boolean permisoModificarReserva;
     protected boolean permisoCancelarReserva;
+    protected boolean permisoCrearHabitacion;
+    protected boolean permisoEliminarHabitacion;
 
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
@@ -109,6 +111,22 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
 
     public boolean isPermisoCancelarReserva() {
         return permisoCancelarReserva;
+    }
+
+    public boolean isPermisoCrearHabitacion() {
+        return permisoCrearHabitacion;
+    }
+
+    public void setPermisoCrearHabitacion(boolean permisoCrearHabitacion) {
+        this.permisoCrearHabitacion = permisoCrearHabitacion;
+    }
+
+    public boolean isPermisoEliminarHabitacion() {
+        return permisoEliminarHabitacion;
+    }
+
+    public void setPermisoEliminarHabitacion(boolean permisoEliminarHabitacion) {
+        this.permisoEliminarHabitacion = permisoEliminarHabitacion;
     }
 
     @Override
