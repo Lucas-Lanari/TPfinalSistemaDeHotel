@@ -3,14 +3,20 @@ import Clases.Clientes;
 import Clases.Cuentas;
 import Clases.Staff;
 import Enumeradores.GuiEstados;
-
+import Gestores.GestorCuentas;
+import Excepciones.ErrorLoginException;
 import java.util.Scanner;
 
 public class Menu {
 
     private GuiEstados estado = GuiEstados.INICIAR_SESION;
     private GuiEstados menuPrincipal;      // guarda el menu al que lleva la opción volver en los gestores
-    private Cuentas cuentaActual;
+    private GestorCuentas gestorCuentas;
+    private Scanner scanner = new Scanner(System.in);
+
+    public Menu(GestorCuentas gestorCuentas) {
+        this.gestorCuentas = gestorCuentas;
+    }
 
     private MenuOpciones armarMenu(){
         MenuOpciones menu = new MenuOpciones();
@@ -63,8 +69,20 @@ public class Menu {
     private GuiEstados ejecutarOpcion(String opcion) {
         switch (opcion){
             case "login":
-                //iniciar sesion usando gestor cuenta -- cuentaActual = gestorCuentas.iniciarSesion(...);
-                //reemplazar instance of por un chequeo de getPermisos
+
+                System.out.print("Usuario: ");
+                String usuario = scanner.nextLine().trim();
+                System.out.print("Contraseña: ");
+                String contrasenia = scanner.nextLine();
+
+                Cuentas cuentaActual;
+
+                try {
+                    cuentaActual = gestorCuentas.login(usuario, contrasenia);
+                } catch (ErrorLoginException e) {
+                    System.out.println(e.getMessage());
+                    return estado;
+                }
 
                 if (cuentaActual instanceof Admins)
                     menuPrincipal = GuiEstados.MENU_ADMIN;
@@ -87,7 +105,7 @@ public class Menu {
                 return GuiEstados.GESTION_HABITACIONES;
 
             case "logout":
-                cuentaActual = null;
+                gestorCuentas.logout();
                 return GuiEstados.INICIAR_SESION;
 
             case "salir":
@@ -99,7 +117,6 @@ public class Menu {
     }
 
     public void ejecutar() {
-        Scanner scanner = new Scanner(System.in);
         while (estado != GuiEstados.TERMINADO) {
             System.out.println(estado.getNombreBonito());
             MenuOpciones menu = armarMenu();
