@@ -2,6 +2,7 @@ import Clases.Admins;
 import Clases.Clientes;
 import Clases.Cuentas;
 import Clases.Staff;
+import Conexiones.Conexion;
 import Enumeradores.GuiEstados;
 import Enumeradores.RolesCuenta;
 import Gestores.GestorHotel;
@@ -109,7 +110,6 @@ public class Menu {
             case "irCuentas":
                 return GuiEstados.GESTION_CUENTAS;
 
-
             case "verDisponibles":
                 mostrarTexto(gestorHotel.listarHabitacionesDisponibles(), "No hay habitaciones disponibles.");
                 return estado;
@@ -127,8 +127,23 @@ public class Menu {
                 return estado;
 
             case "eliminarCuenta":
-                gestorHotel.eliminarCuenta();
+            case "restaurarCuenta": {
+                boolean eliminar = opcion.equals("eliminarCuenta");
+
+                System.out.print("Usuario de la cuenta: ");
+                Cuentas cuenta = gestorHotel.buscarCuentaPorUsuario(scanner.nextLine().trim());
+
+                if (cuenta == null) {
+                    System.out.println("No existe esa cuenta.");
+                } else if (eliminar && cuenta.getId().equals(gestorHotel.getCuentaActual().getId())) {
+                    System.out.println("No podés eliminar tu propia cuenta.");
+                } else if (Conexion.eliminarCuenta(cuenta, eliminar)) {   // actualiza base y objeto
+                    System.out.println(eliminar ? "Cuenta eliminada." : "Cuenta restaurada.");
+                } else {
+                    System.out.println("No se pudo actualizar la cuenta.");
+                }
                 return estado;
+            }
 
             case "nuevaReserva":
                 gestorHotel.agregarReserva();
