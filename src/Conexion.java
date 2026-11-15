@@ -9,9 +9,9 @@ import java.util.HashSet;
 
 public abstract class Conexion {
 
-    private final static String url = "";
-    private final static String name = "";
-    private final static String pass = "";
+    private final static String url = "jdbc:mysql://localhost:3306/hotel";
+    private final static String name = "root";
+    private final static String pass = "Hola123!";
 
     private static Connection crearConexion() throws SQLException {
         return DriverManager.getConnection(url,name,pass);
@@ -64,7 +64,7 @@ public abstract class Conexion {
                     """);
 
             stmt.execute("""
-                    CREATE TABLE IF NOT EXISTS Reserva(
+                    CREATE TABLE IF NOT EXISTS Reservas(
                     idReserva INT PRIMARY KEY AUTO_INCREMENT,
                     idHabitacion INT,
                     CONSTRAINT fk_idHabitacion
