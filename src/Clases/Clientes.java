@@ -1,7 +1,9 @@
+package Clases;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Clientes extends Cuentas{
+public class Clientes extends Cuentas {
     private String paisOrigen;
     private String domicilioOrigen;
 

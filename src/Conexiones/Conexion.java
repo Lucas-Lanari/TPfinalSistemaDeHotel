@@ -1,9 +1,10 @@
-import Clases.Habitaciones;
-import Clases.Reservas;
+package Conexiones;
+
+import Clases.*;
 import Enumeradores.EstadoReserva;
 import Enumeradores.RazonesOcupada;
+import Enumeradores.RolesCuenta;
 
-import javax.swing.text.html.HTMLDocument;
 import java.sql.*;
 import java.util.HashSet;
 
@@ -103,17 +104,17 @@ public abstract class Conexion {
             // cargar datos adicionales para cada tipo de cuenta
 
             switch(rol) {
-                case ADMINISTRADOR:
+                case RolesCuenta.ADMINISTRADOR:
                     // FUNCIONALIDAD FUTURA
 
                     retorno = new Admins(resultadoCuenta);
                     break;
-                case STAFF:
+                case RolesCuenta.STAFF:
                     // FUNCIONALIDAD FUTURA
 
                     retorno = new Staff(resultadoCuenta);
                     break;
-                case CLIENTE:
+                case RolesCuenta.CLIENTE:
                     try (PreparedStatement ps = conexion.prepareStatement(sqlDatosAdicionalesCLiente)) {
                         ps.setInt(1,idCuenta);
                         ResultSet resultadoDatoAdicional = ps.executeQuery();

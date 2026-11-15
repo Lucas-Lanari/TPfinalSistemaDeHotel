@@ -36,7 +36,7 @@
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-136" parent="HSOP8H8r_GNRuTHXVBKB-5" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="- estadoReserva : EstadosReserva" vertex="1">
           <mxGeometry height="30" width="210" y="210" as="geometry" />
         </mxCell>
-        <mxCell id="HSOP8H8r_GNRuTHXVBKB-17" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Clientes" vertex="1">
+        <mxCell id="HSOP8H8r_GNRuTHXVBKB-17" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Clases.Clientes" vertex="1">
           <mxGeometry height="240" width="240" x="468" y="890" as="geometry" />
         </mxCell>
         <mxCell id="_nejWnNyAp8LQpfjy7XN-8" edge="1" parent="HSOP8H8r_GNRuTHXVBKB-17" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;" value="">
@@ -122,7 +122,7 @@
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-187" edge="1" parent="1" source="HSOP8H8r_GNRuTHXVBKB-97" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;" target="HSOP8H8r_GNRuTHXVBKB-163">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="HSOP8H8r_GNRuTHXVBKB-97" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="&lt;i&gt;Cuentas&lt;/i&gt;" vertex="1">
+        <mxCell id="HSOP8H8r_GNRuTHXVBKB-97" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="&lt;i&gt;Clases.Cuentas&lt;/i&gt;" vertex="1">
           <mxGeometry height="360" width="250" x="209" y="450" as="geometry" />
         </mxCell>
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-98" parent="HSOP8H8r_GNRuTHXVBKB-97" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="# id : int" vertex="1">
@@ -185,7 +185,7 @@
             <mxPoint x="190" y="120" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="HSOP8H8r_GNRuTHXVBKB-159" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Staff" vertex="1">
+        <mxCell id="HSOP8H8r_GNRuTHXVBKB-159" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Clases.Staff" vertex="1">
           <mxGeometry height="180" width="240" x="214" y="890" as="geometry" />
         </mxCell>
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-162" parent="HSOP8H8r_GNRuTHXVBKB-159" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="+ getPermisoCrearCuenta() : boolean" vertex="1">
@@ -203,7 +203,7 @@
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-179" parent="HSOP8H8r_GNRuTHXVBKB-159" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;div&gt;+ getPermisoCancelarReserva() : boolean&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="240" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="HSOP8H8r_GNRuTHXVBKB-163" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Admins" vertex="1">
+        <mxCell id="HSOP8H8r_GNRuTHXVBKB-163" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Clases.Admins" vertex="1">
           <mxGeometry height="180" width="250" x="-50" y="890" as="geometry" />
         </mxCell>
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-166" parent="HSOP8H8r_GNRuTHXVBKB-163" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="+ getPermisoCrearCuenta() : boolean" vertex="1">
@@ -224,25 +224,25 @@
         <mxCell id="HSOP8H8r_GNRuTHXVBKB-188" edge="1" parent="1" source="HSOP8H8r_GNRuTHXVBKB-97" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.525;entryY=-0.012;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;" target="HSOP8H8r_GNRuTHXVBKB-17">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-9" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Conexion" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-9" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Conexiones.Conexion" vertex="1">
           <mxGeometry height="570" width="460" x="-630" y="450" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-11" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ crearCuenta(Cuentas c) : boolean&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-11" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ crearCuenta(Clases.Cuentas c) : boolean&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-12" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ actualizarCuenta(Cuentas c) : boolean&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-12" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ actualizarCuenta(Clases.Cuentas c) : boolean&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="60" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-13" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ eliminarCuenta(Cuentas c) : boolean&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-13" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ eliminarCuenta(Clases.Cuentas c) : boolean&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-17" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuenta(int id) : Cuentas&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-17" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuenta(int id) : Clases.Cuentas&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="120" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-35" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuentasPorNombre(String nombre) : Cuentas[]&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-35" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuentasPorNombre(String nombre) : Clases.Cuentas[]&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="_nejWnNyAp8LQpfjy7XN-36" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuentasEliminadas() : Cuentas[]&lt;/u&gt;" vertex="1">
+        <mxCell id="_nejWnNyAp8LQpfjy7XN-36" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ buscarCuentasEliminadas() : Clases.Cuentas[]&lt;/u&gt;" vertex="1">
           <mxGeometry height="30" width="460" y="180" as="geometry" />
         </mxCell>
         <mxCell id="_nejWnNyAp8LQpfjy7XN-14" parent="_nejWnNyAp8LQpfjy7XN-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="&lt;u&gt;+ crearReserva(Clases.Reservas r) : boolean&lt;/u&gt;" vertex="1">

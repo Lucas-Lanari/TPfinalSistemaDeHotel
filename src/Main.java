@@ -1,3 +1,5 @@
+import Enumeradores.GuiEstados;
+
 import java.util.Scanner;
 
 void main() {
@@ -43,7 +45,7 @@ void main() {
 
         switch (menu.encontrarOpcion(accion)) {
 
-            // GuiEstados.INICIAR_SESION
+            // Enumeradores.GuiEstados.INICIAR_SESION
             case "iniciarSesion:prueba":
                 System.out.println("seleccionado prueba");
                 break;

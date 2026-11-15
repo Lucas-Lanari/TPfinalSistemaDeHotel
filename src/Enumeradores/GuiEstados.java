@@ -1,3 +1,5 @@
+package Enumeradores;
+
 public enum GuiEstados {
     INICIAR_SESION("Iniciar Sesión"),
     TERMINADO("Cerrando...");

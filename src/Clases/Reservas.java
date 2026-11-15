@@ -13,7 +13,7 @@ public class Reservas {
     private Integer id;
     private int idHabitacion;
     private int idCuentaResponsable;
-    HashSet<String> dniIntegrantes;
+    public HashSet<String> dniIntegrantes;
     private Date checkIn;
     private Date checkOut;
     private EstadoReserva estado;
