@@ -12,6 +12,12 @@ public abstract class Cuentas implements Comparable<Cuentas>{
     protected String contrasenia;
     protected boolean estaEliminado;
 
+    protected boolean permisoCrearCuenta;
+    protected boolean permisoEliminarCuenta;
+    protected boolean permisoCrearReserva;
+    protected boolean permisoModificarReserva;
+    protected boolean permisoCancelarReserva;
+
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
         this.dni = dni;
@@ -81,6 +87,26 @@ public abstract class Cuentas implements Comparable<Cuentas>{
 
     public void setEstaEliminado(boolean estaEliminado) {
         this.estaEliminado = estaEliminado;
+    }
+
+    public boolean isPermisoCrearCuenta() {
+        return permisoCrearCuenta;
+    }
+
+    public boolean isPermisoEliminarCuenta() {
+        return permisoEliminarCuenta;
+    }
+
+    public boolean isPermisoCrearReserva() {
+        return permisoCrearReserva;
+    }
+
+    public boolean isPermisoModificarReserva() {
+        return permisoModificarReserva;
+    }
+
+    public boolean isPermisoCancelarReserva() {
+        return permisoCancelarReserva;
     }
 
     @Override

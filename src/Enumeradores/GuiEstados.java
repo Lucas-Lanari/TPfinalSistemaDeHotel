@@ -3,9 +3,7 @@ package Enumeradores;
 public enum GuiEstados {
     INICIAR_SESION("Iniciar Sesión"),
     TERMINADO("Cerrando..."),
-    MENU_CLIENTE("Menú de Cliente"),
-    MENU_ADMIN("Menú de Administrador"),
-    MENU_STAFF("Menú de Staff"),
+    MENU_PRINCIPAL("Menú Principal"),
     GESTION_RESERVAS("Reservas"),
     GESTION_HABITACIONES("Habitaciones"),
     GESTION_CUENTAS("Cuentas");

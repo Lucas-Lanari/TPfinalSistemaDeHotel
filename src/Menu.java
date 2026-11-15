@@ -28,21 +28,17 @@ public class Menu {
                 menu.agregarOpcion("Salir", "salir", 'X');
                 break;
 
-            case MENU_STAFF:
-                menu.agregarOpcion("Reservas", "irReservas");
+            case MENU_PRINCIPAL:
+                if (gestorHotel.getCuentaActual().isPermisoCrearReserva()
+                        || gestorHotel.getCuentaActual().isPermisoModificarReserva()
+                        || gestorHotel.getCuentaActual().isPermisoCancelarReserva())
+                    menu.agregarOpcion("Reservas", "irReservas");
+
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()
+                        || gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                    menu.agregarOpcion("Cuentas", "irCuentas");
+
                 menu.agregarOpcion("Habitaciones", "irHabitaciones");
-                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
-                break;
-
-            case MENU_CLIENTE:
-                menu.agregarOpcion("Mis reservas", "misReservas");
-                menu.agregarOpcion("Solicitar reserva", "solicitarReserva");
-                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
-                break;
-
-            case MENU_ADMIN:
-                menu.agregarOpcion("Gestionar cuentas", "irCuentas");
-                menu.agregarOpcion("Hacer backup", "backup");
                 menu.agregarOpcion("Cerrar sesión", "logout", 'X');
                 break;
 
@@ -74,14 +70,6 @@ public class Menu {
         return menu;
     }
 
-    private GuiEstados menuParaRol(RolesCuenta rol) {
-        return switch (rol) {
-            case ADMINISTRADOR -> GuiEstados.MENU_ADMIN;
-            case STAFF         -> GuiEstados.MENU_STAFF;
-            case CLIENTE       -> GuiEstados.MENU_CLIENTE;
-        };
-    }
-
     private GuiEstados ejecutarOpcion(String opcion) {
         switch (opcion){
             case "login":
@@ -91,20 +79,17 @@ public class Menu {
                 System.out.print("Contraseña: ");
                 String contrasenia = scanner.nextLine();
 
-                Cuentas cuentaActual;
-
                 try {
-                    cuentaActual = gestorHotel.login(usuario, contrasenia);
+                    gestorHotel.login(usuario, contrasenia);
                 } catch (ErrorLoginException e) {
                     System.out.println(e.getMessage());
                     return estado;
                 }
 
-                menuPrincipal = menuParaRol(RolesCuenta.valueOf(cuentaActual.getRol()));
-                return menuPrincipal;
+                return GuiEstados.MENU_PRINCIPAL;
 
             case "volver":
-                return menuPrincipal;
+                return GuiEstados.MENU_PRINCIPAL;
 
             case "irReservas":
                 return GuiEstados.GESTION_RESERVAS;
@@ -123,6 +108,7 @@ public class Menu {
                 return GuiEstados.TERMINADO;
 
             default:
+                System.out.println("Esta opción todavía no está implementada.");
                 return estado;
         }
     }
