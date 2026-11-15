@@ -2,22 +2,35 @@ package Clases;
 
 import Enumeradores.RazonesOcupada;
 
+import javax.xml.transform.Result;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Habitaciones {
-    private int id;
+    private Integer id;
     private int piso;
     private int numeroDepartamento;
     private RazonesOcupada ocupacion;
 
-    public Habitaciones(int id, int piso, int numeroDepartamento, RazonesOcupada ocupacion) {
+    public Habitaciones(Integer id, int piso, int numeroDepartamento, RazonesOcupada ocupacion) {
         this.id = id;
         this.piso = piso;
         this.numeroDepartamento = numeroDepartamento;
         this.ocupacion = ocupacion;
     }
 
+    public Habitaciones(ResultSet resultado) throws SQLException {
+        this(
+                resultado.getInt("idHabitacion"),
+                resultado.getInt("piso"),
+                resultado.getInt("numeroDepartamento"),
+                RazonesOcupada.valueOf(resultado.getString("razonOcupada"))
+        );
+    }
+
 
     ///GETTERS Y SETTERS
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -48,5 +61,4 @@ public class Habitaciones {
     public void setOcupacion(RazonesOcupada ocupacion) {
         this.ocupacion = ocupacion;
     }
-
 }
