@@ -74,10 +74,6 @@ public abstract class Conexion {
                     CONSTRAINT fk_idCuentaResponsable
                         FOREIGN KEY (idCuentaResponsable)
                         REFERENCES Cuentas(idCuenta),
-                    idDniIntegrantes INT,
-                    CONSTRAINT fk_idDniIntegrantes
-                        FOREIGN KEY (idDniIntegrantes)
-                        REFERENCES DniIntegrantes(idDniIntegrantes),
                     checkIn DATETIME,
                     checkOut DATETIME,
                     estadoReserva VARCHAR(50)
@@ -175,7 +171,7 @@ public abstract class Conexion {
         return resultados;
     }*/
 
-    public boolean crearCuenta(Cuentas cuenta) {
+    public static boolean crearCuenta(Cuentas cuenta) {
         if (cuenta.getId()!=null) // si ya fue agregado, fallar
             return false;
 
@@ -266,7 +262,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean actualizarCuenta(Cuentas cuenta) {
+    public static boolean actualizarCuenta(Cuentas cuenta) {
         if (cuenta.getId()==null)
             return false;
 
@@ -351,7 +347,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean eliminarCuenta(Cuentas cuenta, boolean eliminado) {
+    public static boolean eliminarCuenta(Cuentas cuenta, boolean eliminado) {
         if (cuenta.getId()==null)
             return false;
 
@@ -487,7 +483,7 @@ public abstract class Conexion {
         return out;
     }*/
 
-    public boolean crearHabitacion(Habitaciones habitacion) {
+    public static boolean crearHabitacion(Habitaciones habitacion) {
         if (habitacion.getId()!=null) // si ya fue agregado, fallar
             return false;
 
@@ -526,7 +522,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean actualizarHabitacion(Habitaciones habitacion) {
+    public static boolean actualizarHabitacion(Habitaciones habitacion) {
         if (habitacion.getId()==null) // no fue  agregado, fallar
             return false;
 
@@ -567,7 +563,7 @@ public abstract class Conexion {
         }
     }
 
-    public boolean eliminarHabitacion(Habitaciones habitacion) throws SQLException{
+    public static boolean eliminarHabitacion(Habitaciones habitacion) throws SQLException{
         if (habitacion.getId()==null)
             return false;
 
