@@ -2,9 +2,9 @@ package Gestores;
 
 import Clases.Cuentas;
 import Clases.Habitaciones;
+import Clases.Reservas;
 import Enumeradores.RazonesOcupada;
-import Excepciones.ErrorLoginException;
-import Excepciones.IdHabitacionNoEncontradoException;
+import Excepciones.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class GestorHotel {
         gestorCuentas.agregar(nuevo);
     }
 
-    public void quitarCuenta (Cuentas elemento) {
+    public void eliminarCuenta (Cuentas elemento) {
         gestorCuentas.eliminar(elemento);
     }
 
@@ -121,20 +121,50 @@ public class GestorHotel {
         return gestorCuentas.modificarEstadoEliminado(id, nuevoEstado);
     }
 
-    public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
-        return gestorCuentas.login(nombreUsuario, contrasenia);
-    }
-
-    public void logout() {
-        gestorCuentas.logout();
-    }
-
-    public Cuentas getCuentaActual() {
-        return gestorCuentas.getCuentaActual();
-    }
-
     //metodos del gestorReservas
 
+    public void agregarReserva(Reservas nuevo) {
+        gestorReservas.agregar(nuevo);
+    }
 
+    public void eliminarReserva(Reservas elemento) {
+        gestorReservas.eliminar(elemento);
+    }
 
+    public String listarReservas() {
+        return gestorReservas.mostrar();
+    }
+
+    public boolean fechaDisponible(int idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) throws FechaNoDisponibleException {
+        return gestorReservas.fechaDisponible(idReserva, fechaInicio, fechaFin);
+    }
+
+    public boolean fechaDisponibleSinId(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return gestorReservas.fechaDisponibleSinId(fechaInicio, fechaFin);
+    }
+
+    private String listarReservasPorIdHabitacion(int idHabitacion) {
+        return gestorReservas.listarReservasPorHabitacion(idHabitacion);
+    }
+
+    public String listarReservasPorPasajero(String dniPasajero) {
+        return gestorReservas.listarReservasPorPasajero(dniPasajero);
+    }
+
+    public Reservas buscarReserva(int idReserva) throws IdReservaInexistenteException {
+        return gestorReservas.buscarReserva(idReserva);
+    }
+
+    public boolean modificarReserva(int idReserva, LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
+        return gestorReservas.modificarReserva(idReserva, nuevaFechaInicio, nuevaFechaFin);
+    }
+
+    public boolean modificarReserva(int idReserva, Habitaciones nuevaHabitacion , LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
+        return gestorReservas.modificarReserva(idReserva, nuevaHabitacion, nuevaFechaInicio, nuevaFechaFin);
+    }
+
+    //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
+    public ArrayList<Integer> buscarHabitacionesParaReserva(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return gestorReservas.buscarHabitacionesParaReserva(fechaInicio, fechaFin);
+    }
 }
