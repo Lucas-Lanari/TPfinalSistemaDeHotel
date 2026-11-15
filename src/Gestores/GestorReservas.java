@@ -1,6 +1,8 @@
-package Clases;
+package Gestores;
 
 
+import Clases.Habitaciones;
+import Clases.Reservas;
 import Enumeradores.RazonesOcupada;
 import Excepciones.FechaInvalidaException;
 import Excepciones.FechaNoDisponibleException;
@@ -88,7 +90,7 @@ public class GestorReservas extends Contenedor<Reservas> {
         return true;
     }
 
-    public boolean modificarReserva(int idReserva, Habitaciones nuevaHabitacion ,LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
+    public boolean modificarReserva(int idReserva, Habitaciones nuevaHabitacion , LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
 
         //verificamos que la nueva fecha de Inicio este antes de la fecha final
         if (nuevaFechaFin.isBefore(nuevaFechaInicio)) {

@@ -1,7 +1,10 @@
+package Clases;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
-public abstract class Cuentas {
+public abstract class Cuentas implements Comparable<Cuentas>{
     protected Integer id;
     protected String dni;
     protected String nombre;
@@ -78,5 +81,34 @@ public abstract class Cuentas {
 
     public void setEstaEliminado(boolean estaEliminado) {
         this.estaEliminado = estaEliminado;
+    }
+
+    @Override
+    public String toString() {
+        return "id: "+ id +
+                "\ndni: "+ dni +
+                "\nnombre: "+ nombre +
+                "\nnombre usuario: "+ nombreUsuario +
+                "\ncontrasenia: "+ contrasenia +
+                "\nestado eliminado: "+ estaEliminado +"\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Cuentas))
+            return false;
+
+        Cuentas cuentaObj = (Cuentas) obj;
+        return this.id.equals(cuentaObj.id);
+    }
+
+    @Override
+    public int compareTo(Cuentas c) {
+        return this.id.compareTo(c.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }

@@ -1,6 +1,6 @@
-package Clases;
+package Gestores;
 
-import Enumeradores.RazonOcupada;
+import Clases.Habitaciones;
 import Enumeradores.RazonesOcupada;
 import Excepciones.IdHabitacionNoEncontradoException;
 

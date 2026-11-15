@@ -1,5 +1,7 @@
+package Enumeradores;
+
 public enum RolesCuenta {
-    ADMINISTRADOR("Administrador"),STAFF("Staff"),CLIENTE("Cliente");
+    ADMINISTRADOR("Administrador"),STAFF("Clases.Staff"),CLIENTE("Cliente");
 
     private final String nombreBonito;
 

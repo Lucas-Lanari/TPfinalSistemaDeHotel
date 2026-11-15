@@ -1,4 +1,4 @@
-package Clases;
+package Gestores;
 
 import java.util.HashMap;
 import java.util.Iterator;

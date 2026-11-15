@@ -5,6 +5,7 @@ import Enumeradores.RazonesOcupada;
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class Habitaciones {
     private Integer id;
@@ -60,5 +61,26 @@ public class Habitaciones {
 
     public void setOcupacion(RazonesOcupada ocupacion) {
         this.ocupacion = ocupacion;
+    }
+
+    @Override
+    public String toString() {
+        return "Habitacion nro "+numeroDepartamento+" piso "+ piso +
+                "\nid: "+ id +
+                "\nEstado: "+ ocupacion +"\n";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Habitaciones))
+            return false;
+
+        Habitaciones objHabitacion = (Habitaciones) obj;
+        return this.id.equals(objHabitacion.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
     }
 }
