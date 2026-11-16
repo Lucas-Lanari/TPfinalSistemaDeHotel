@@ -1,13 +1,56 @@
 package Gestores;
 
 import Clases.Habitaciones;
+import Conexiones.Conexion;
 import Enumeradores.RazonesOcupada;
 import Excepciones.IdHabitacionNoEncontradoException;
 
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
 public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
+
+
+    public GestorHabitaciones() throws SQLException {
+        super();
+
+        HashSet<Habitaciones> habitaciones= Conexion.listarHabitaciones();
+
+        for (Habitaciones habitacion : habitaciones) {
+            super.agregar(habitacion.getId(), habitacion);
+        }
+
+    }
+
+    public boolean agregar(Habitaciones habitacion) {
+        if (mapa.containsKey(habitacion.getId()))
+            return false;
+
+        if (!Conexion.crearHabitacion(habitacion))
+            return false;
+
+        super.agregar(habitacion.getId(),habitacion);
+
+        return true;
+    }
+
+    public boolean eliminar(int idHabitacion) throws IdHabitacionNoEncontradoException {
+        if (!mapa.containsKey(idHabitacion))
+            throw new IdHabitacionNoEncontradoException();
+
+        try {
+            if (Conexion.eliminarHabitacion(buscarPorClave(idHabitacion)))
+                return false;
+        } catch (SQLException e) {
+            return false;
+        }
+
+        super.quitar(idHabitacion);
+
+        return true;
+    }
 
     public String listarHabitacionesDisponibles() {
         StringBuilder respuesta = new StringBuilder();
@@ -47,6 +90,8 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
         elemento.setPiso(piso);
         elemento.setNumeroDepartamento(numeroDepartamento);
 
+        Conexion.actualizarHabitacion(elemento);
+
         return true;
     }
 
@@ -58,6 +103,8 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
         }
 
         elemento.setOcupacion(nuevaOcupacion);
+
+        Conexion.actualizarHabitacion(elemento);
 
         return true;
     }
