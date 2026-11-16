@@ -4,6 +4,7 @@ import Clases.Cuentas;
 import Clases.Habitaciones;
 import Clases.Reservas;
 import Enumeradores.RazonesOcupada;
+import Enumeradores.RolesCuenta;
 import Excepciones.*;
 
 import java.time.LocalDateTime;
@@ -121,6 +122,18 @@ public class GestorHotel {
         return gestorCuentas.modificarEstadoEliminado(id, nuevoEstado);
     }
 
+    public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
+        return gestorCuentas.login(nombreUsuario, contrasenia);
+    }
+
+    public void logout() {
+        gestorCuentas.logout();
+    }
+
+    public Cuentas getCuentaActual() {
+        return gestorCuentas.getCuentaActual();
+    }
+
     //metodos del gestorReservas
 
     public void agregarReserva(Reservas nuevo) {
@@ -132,7 +145,15 @@ public class GestorHotel {
     }
 
     public String listarReservas() {
+        if (cuentaActualEsCliente())
+            return gestorReservas.listarReservasPorCuenta(gestorCuentas.getCuentaActual().getId());
         return gestorReservas.mostrar();
+    }
+
+
+    private boolean cuentaActualEsCliente() {
+        Cuentas actual = gestorCuentas.getCuentaActual();
+        return actual != null && RolesCuenta.CLIENTE.name().equals(actual.getRol());
     }
 
     public boolean fechaDisponible(int idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) throws FechaNoDisponibleException {

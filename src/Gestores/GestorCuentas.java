@@ -55,13 +55,12 @@ public class GestorCuentas extends Contenedor<Cuentas> {
     }
 
     public boolean modificarNombreUsuario(Integer id, String nombreUsuario) {
-        for (Cuentas actual: lista) {
+        for (Cuentas actual : lista) {
             if (actual.getId().equals(id)) {
-                actual.setNombre(nombreUsuario);
+                actual.setNombreUsuario(nombreUsuario);
                 return true;
             }
         }
-
         return false;
     }
 
@@ -91,6 +90,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setEstaEliminado(nuevoEstado);
+                return true;
             }
         }
 
@@ -102,13 +102,13 @@ public class GestorCuentas extends Contenedor<Cuentas> {
     public Cuentas login(String nombreUsuario, String contrasenia) throws ErrorLoginException {
         Cuentas cuenta = buscarCuentaPorUsuario(nombreUsuario);
 
-        if (cuenta==null) {
+        if (cuenta == null) {
             throw new UsuarioInexistenteException("El usuario no existe.");
         }
-        if (cuenta.getEstaEliminado()){
+        if (!cuenta.getContrasenia().equals(contrasenia)) {
             throw new ContraseniaIncorrectaException("Contraseña incorrecta.");
         }
-        if(!cuenta.getContrasenia().equals(contrasenia)){
+        if (cuenta.getEstaEliminado()) {
             throw new UsuarioEliminadoException("El usuario fue eliminado.");
         }
 
