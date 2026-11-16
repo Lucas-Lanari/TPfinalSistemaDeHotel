@@ -12,6 +12,7 @@ import Excepciones.HabitacionNoDisponibleException;
 import Excepciones.IdReservaInexistenteException;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -161,19 +162,19 @@ public class GestorReservas extends Contenedor<Reservas> {
         return true;
     }
 
-    //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
-    public ArrayList<Integer> buscarHabitacionesParaReserva(int idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        ArrayList<Integer> arrHabitacionesOcupadas = new ArrayList<>();
+    public ArrayList<LocalDate> fechasLibres(Integer idReserva, Integer idHabitacion, int dias) {
+        ArrayList<LocalDate> libres = new ArrayList<>();
+        LocalDate dia = LocalDate.now();
 
-        for (Reservas actual : lista) {
-            if (actual.getEstado() != EstadoReserva.TERMINADA && (fechaInicio.isBefore(actual.getCheckOut()) && actual.getIdHabitacion() != idHabitacion && fechaFin.isAfter(actual.getCheckIn())) ) {
-                arrHabitacionesOcupadas.add(actual.getIdHabitacion());
+        for (int i = 0; i < dias; i++) {
+            // la noche del día "dia" está libre si se puede reservar de dia 14:00 a dia+1 10:00
+            if (fechaDisponible(idReserva, idHabitacion, dia.atTime(14, 0), dia.plusDays(1).atTime(10, 0))) {
+                libres.add(dia);
             }
+            dia = dia.plusDays(1);
         }
 
-        return arrHabitacionesOcupadas;
+        return libres;
     }
-
-
 
 }

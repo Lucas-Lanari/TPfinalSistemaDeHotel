@@ -1,12 +1,10 @@
 package Clases;
 
-import Interfaces.IPermisos;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
+public abstract class Cuentas implements Comparable<Cuentas> {
     protected Integer id;
     protected String dni;
     protected String nombre;
@@ -19,6 +17,8 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
     protected boolean permisoManejarHabitaciones;
     protected boolean permisoVerHabitaciones;
     protected boolean permisoCrearCuentas;
+    protected boolean permisoCrearHabitaciones;
+    protected boolean permisoHacerBackup;
 
 
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
@@ -28,6 +28,7 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
         this.nombreUsuario = nombreUsuario;
         this.contrasenia = contrasenia;
         this.estaEliminado = estaEliminado;
+        asignarPermisos();
     }
 
     public Cuentas(ResultSet resultadoCuenta) throws SQLException {
@@ -112,25 +113,12 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
         return permisoCrearCuentas;
     }
 
-    public void setPermisoCrearCuentas(boolean permisoCrearCuentas) {
-        this.permisoCrearCuentas = permisoCrearCuentas;
+    public boolean isPermisoCrearHabitaciones() {
+        return permisoCrearHabitaciones;
     }
 
-    public void setPermisoManejarHabitaciones(boolean permisoManejarHabitaciones) {
-        this.permisoManejarHabitaciones = permisoManejarHabitaciones;
-    }
+    protected abstract void asignarPermisos();
 
-    public void setPermisoManejarCuentas(boolean permisoManejarCuentas) {
-        this.permisoManejarCuentas = permisoManejarCuentas;
-    }
-
-    public void setPermisoManejarReservas(boolean permisoManejarReservas) {
-        this.permisoManejarReservas = permisoManejarReservas;
-    }
-
-    public void setPermisoVerHabitaciones(boolean permisoVerHabitaciones) {
-        this.permisoVerHabitaciones = permisoVerHabitaciones;
-    }
 
     @Override
     public String toString() {

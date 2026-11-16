@@ -3,11 +3,13 @@ package Gestores;
 import Clases.Cuentas;
 import Clases.Habitaciones;
 import Clases.Reservas;
+import Conexiones.Conexion;
 import Enumeradores.RazonesOcupada;
 import Enumeradores.RolesCuenta;
 import Excepciones.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -54,15 +56,19 @@ public class GestorHotel {
     }
 
     public boolean agregarHabitacion(Habitaciones habitacion) {
-        if (buscarPorClave(habitacion.getId()) != null) {
+
+        if (habitacion == null || habitacion.getId() != null) {
+            return false;
+        }
+        if (Conexion.crearHabitacion(habitacion)) {
             gestorHabitaciones.agregar(habitacion.getId(), habitacion);
             return true;
         }
         return false;
     }
 
-    public Habitaciones eliminarHabitacion(int idHabitacion) {
-        return gestorHabitaciones.quitar(idHabitacion);
+    public boolean eliminarHabitacion(int idHabitacion) {
+        return gestorHabitaciones.eliminar(idHabitacion);
     }
 
     public String listarHabitaciones() {
@@ -146,11 +152,11 @@ public class GestorHotel {
     //metodos del gestorReservas
 
     public boolean agregarReserva(Reservas nuevo) {
-        gestorReservas.agregarReserva(nuevo);
+        return gestorReservas.agregarReserva(nuevo);
     }
 
     public boolean eliminarReserva(int id) {
-        gestorReservas.eliminarReserva(id);
+        return gestorReservas.eliminarReserva(id);
     }
 
     public String listarReservas() {
@@ -185,8 +191,23 @@ public class GestorHotel {
         return gestorReservas.modificarReserva(idReserva, idHabitacion, nuevaFechaInicio, nuevaFechaFin);
     }
 
-    //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
-    public ArrayList<Integer> buscarHabitacionesParaReserva(Integer idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return gestorReservas.buscarHabitacionesParaReserva(idHabitacion, fechaInicio, fechaFin);
+
+
+    public ArrayList<LocalDate> fechasLibres(Integer idReserva, Integer idHabitacion, int dias) {
+        return gestorReservas.fechasLibres(idReserva, idHabitacion, dias);
     }
+
+    public ArrayList<Integer> listarIdsHabitaciones() {
+        return gestorHabitaciones.listarIdsHabitaciones();
+    }
+
+    public String listarHabitacionesPorOcupacion(RazonesOcupada... razones) {
+        return gestorHabitaciones.listarHabitacionesPorOcupacion(razones);
+    }
+
+    public boolean existeHabitacion(int piso, int numeroDepartamento) {
+        return gestorHabitaciones.existeHabitacion(piso, numeroDepartamento);
+    }
+
+
 }

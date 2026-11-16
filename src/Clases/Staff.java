@@ -9,12 +9,6 @@ public class Staff extends Cuentas {
 
     public Staff(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
-
-        permisoManejarReservas=true;
-        permisoManejarHabitaciones = false;
-        permisoManejarCuentas=true;
-        permisoVerHabitaciones = true;
-        permisoCrearCuentas = false;
     }
 
     public Staff(ResultSet resultadoCuenta) throws SQLException {
@@ -27,43 +21,15 @@ public class Staff extends Cuentas {
     }
 
     @Override
-    public boolean puedeCrearCuenta() {
-        return false;
+    protected void asignarPermisos() {
+        permisoManejarReservas = true;
+        permisoManejarHabitaciones = true;
+        permisoManejarCuentas = true;
+        permisoVerHabitaciones = true;
+        permisoCrearCuentas = false;
+        permisoCrearHabitaciones = false;
+        permisoHacerBackup = false;
     }
 
-    @Override
-    public boolean puedeEliminarCuenta() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeCrearReserva() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeModificarReserva() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeCancelarReserva() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeHacerCheckInOut() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeHacerBackup() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeVerReservas() {
-        return true;
-    }
 
 }

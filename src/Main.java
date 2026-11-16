@@ -1,7 +1,4 @@
-import Clases.Cuentas;
 import Conexiones.Conexion;
-import Enumeradores.GuiEstados;
-import Gestores.GestorCuentas;
 import java.sql.SQLException;
 import Gestores.GestorHotel;
 

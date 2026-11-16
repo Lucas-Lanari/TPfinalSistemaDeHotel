@@ -2,13 +2,13 @@ import Clases.*;
 import Conexiones.Conexion;
 import Enumeradores.EstadoReserva;
 import Enumeradores.GuiEstados;
-import Excepciones.DniExistenteException;
-import Excepciones.UsuarioExistenteException;
+import Enumeradores.RazonesOcupada;
+import Excepciones.*;
 import Gestores.GestorHotel;
-import Excepciones.ErrorLoginException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,7 +22,7 @@ public class Menu {
         this.gestorHotel = gestorHotel;
     }
 
-    private MenuOpciones armarMenu(){
+    private MenuOpciones armarMenu() {
         MenuOpciones menu = new MenuOpciones();
 
         switch (estado) {
@@ -45,6 +45,11 @@ public class Menu {
                 if (gestorHotel.getCuentaActual().isPermisoManejarHabitaciones()) {
                     menu.agregarOpcion("Ver ocupadas", "verOcupadas");
                     menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                    menu.agregarOpcion("Cambiar estado de habitación", "cambiarEstadoHabitacion");
+                }
+                if (gestorHotel.getCuentaActual().isPermisoCrearHabitaciones()) {
+                    menu.agregarOpcion("Crear Habitación", "crearHabitacion");
+                    menu.agregarOpcion("Borrar Habitación", "borrarHabitacion");
                 }
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
@@ -52,7 +57,7 @@ public class Menu {
             case GESTION_RESERVAS:
                 menu.agregarOpcion("Nueva reserva", "nuevaReserva");
 
-                if (gestorHotel.getCuentaActual().isPermisoManejarReservas()){
+                if (gestorHotel.getCuentaActual().isPermisoManejarReservas()) {
                     menu.agregarOpcion("Modificar reserva", "modificarReserva");
                     menu.agregarOpcion("Cancelar reserva", "cancelarReserva");
                 } else {
@@ -67,10 +72,9 @@ public class Menu {
                     menu.agregarOpcion("Ver cuentas", "verCuentas");
                 } else {
                     menu.agregarOpcion("Ver cuenta", "verCuentas");
-                    menu.agregarOpcion("Eliminar cuenta", "eliminarMiCuenta");
                 }
 
-                if (gestorHotel.getCuentaActual().isPermisoCrearCuentas()){
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuentas()) {
                     menu.agregarOpcion("Crear cuenta", "crearCuenta");
                     menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
                     menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
@@ -87,7 +91,7 @@ public class Menu {
     }
 
     private GuiEstados ejecutarOpcion(String opcion) {
-        switch (opcion){
+        switch (opcion) {
             case "login":
 
                 System.out.print("Usuario: ");
@@ -120,12 +124,37 @@ public class Menu {
                 mostrarTexto(gestorHotel.listarHabitacionesDisponibles(), "No hay habitaciones disponibles.");
                 return estado;
 
+            case "verOcupadas":
+                mostrarTexto(gestorHotel.listarHabitacionesPorOcupacion(RazonesOcupada.OCUPADA), "No hay habitaciones ocupadas.");
+                return estado;
+
+            case "verNoDisponibles":
+                mostrarTexto(gestorHotel.listarHabitacionesPorOcupacion(
+                                RazonesOcupada.LIMPIANDO,
+                                RazonesOcupada.REPARANDO,
+                                RazonesOcupada.DESINFECTANDO,
+                                RazonesOcupada.SIN),
+                        "No hay habitaciones no disponibles.");
+                return estado;
+
+            case "crearHabitacion":
+                crearHabitacion();
+                return estado;
+
+            case "borrarHabitacion":
+                borrarHabitacion();
+                return estado;
+
+            case "cambiarEstadoHabitacion":
+                cambiarEstadoHabitacion();
+                return estado;
+
             case "verTodas":
                 mostrarTexto(gestorHotel.listarHabitaciones(), "No hay habitaciones cargadas.");
                 return estado;
 
             case "verCuentas":
-                mostrarTexto(gestorHotel.listarCuentas(), "No hay cuentas cargadas.");
+                verCuenta();
                 return estado;
 
             case "crearCuenta":
@@ -140,7 +169,6 @@ public class Menu {
                 cambiarEstadoCuenta(false);
                 return estado;
 
-
             case "verReservas":
                 mostrarTexto(gestorHotel.listarReservas(), "No hay reservas para mostrar.");
                 return estado;
@@ -150,11 +178,11 @@ public class Menu {
                 return estado;
 
             case "modificarReserva":
-                gestorHotel.modificarReserva();
+                modificarReserva();
                 return estado;
 
             case "cancelarReserva":
-                gestorHotel.eliminarReserva();
+                cancelarReserva();
                 return estado;
 
             case "logout":
@@ -292,28 +320,30 @@ public class Menu {
 
     private void nuevaReserva() {
         try {
-            LocalDateTime inicio = pedirFecha("Fecha de ingreso (yyyy-MM-dd): ").atTime(14, 0);
-            LocalDateTime fin = pedirFecha("Fecha de salida (yyyy-MM-dd): ").atTime(10, 0);
+            System.out.println("Habitaciones: " + gestorHotel.listarIdsHabitaciones());
+            System.out.print("Elegí el id de la habitación: ");
+            int idHabitacion = Integer.parseInt(scanner.nextLine().trim());
 
+            if (gestorHotel.buscarPorClave(idHabitacion) == null) {
+                System.out.println("No existe esa habitación.");
+                return;
+            }
+
+            mostrarFechasLibres(null, idHabitacion);
+
+            LocalDateTime inicio = pedirFecha("Fecha de ingreso (dd/MM/yyyy): ").atTime(14, 0);
+            LocalDateTime fin = pedirFecha("Fecha de salida (dd/MM/yyyy): ").atTime(10, 0);
+
+            if (inicio.isBefore(LocalDate.now().atStartOfDay())) {
+                System.out.println("La fecha de ingreso no puede estar en el pasado.");
+                return;
+            }
             if (!inicio.isBefore(fin)) {
                 System.out.println("La salida debe ser posterior al ingreso.");
                 return;
             }
-
-            ArrayList<Integer> libres = gestorHotel.buscarHabitacionesFechaDisponibles(null, inicio, fin);
-
-            if (libres.isEmpty()) {
-                System.out.println("No hay habitaciones disponibles para ese período.");
-                return;
-            }
-
-            System.out.println("Habitaciones disponibles: ");
-            System.out.println(libres);
-            System.out.print("Elegí el id de la habitación: ");
-            int idHabitacion = Integer.parseInt(scanner.nextLine().trim());
-
-            if (!libres.contains(idHabitacion)) {
-                System.out.println("Esa habitación no está en la lista de disponibles.");
+            if (!gestorHotel.fechaDisponible(null, idHabitacion, inicio, fin)) {
+                System.out.println("La habitación no está disponible en todo ese período.");
                 return;
             }
 
@@ -342,13 +372,8 @@ public class Menu {
 
             } while (seguir.equalsIgnoreCase("S"));
 
-            if (dnis.isEmpty()) {
-                System.out.println("Tiene que haber al menos un pasajero.");
-                return;
-            }
-
-
-            Reservas nueva = new Reservas(null, idHabitacion, gestorHotel.getCuentaActual().getId(), inicio, fin, EstadoReserva.ACTIVA);
+            Reservas nueva = new Reservas(null, idHabitacion, gestorHotel.getCuentaActual().getId(),
+                    inicio, fin, EstadoReserva.ACTIVA);
 
             for (String dni : dnis) {
                 nueva.dniIntegrantes.add(dni);
@@ -363,13 +388,343 @@ public class Menu {
         } catch (NumberFormatException e) {
             System.out.println("Debe ingresar un número válido.");
         } catch (java.time.format.DateTimeParseException e) {
-            System.out.println("Formato de fecha inválido. Usá yyyy-MM-dd.");
+            System.out.println("Formato de fecha inválido. Usá dd/MM/yyyy.");
         }
     }
 
     private LocalDate pedirFecha(String mensaje) {
         System.out.print(mensaje);
-        return LocalDate.parse(scanner.nextLine().trim());
+        return LocalDate.parse(scanner.nextLine().trim(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    private Reservas pedirReserva() throws IdReservaInexistenteException {
+        if (gestorHotel.getCuentaActual().isPermisoManejarReservas()) {
+            mostrarTexto(gestorHotel.listarReservas(), "No hay reservas para mostrar.");
+        } else {
+            mostrarTexto(gestorHotel.listarReservasPorPasajero(gestorHotel.getCuentaActual().getDni()), "No se encontraron reservas a su nombre.");
+        }
+
+        System.out.print("Id de la reserva: ");
+        int id = Integer.parseInt(scanner.nextLine().trim());
+
+        Reservas reserva = gestorHotel.buscarReserva(id);
+        Cuentas actual = gestorHotel.getCuentaActual();
+
+        boolean esSuya = Integer.valueOf(reserva.getIdCuentaResponsable()).equals(actual.getId());
+
+        if (!actual.isPermisoManejarReservas() && !esSuya) {
+            System.out.println("Solo podés gestionar tus propias reservas.");
+            return null;
+        }
+
+        return reserva;
+    }
+
+
+
+
+    private void modificarReserva() {
+        try {
+            Reservas reserva = pedirReserva();
+            if (reserva == null) {
+                return;
+            }
+
+            if (reserva.getEstado() == EstadoReserva.TERMINADA) {
+                System.out.println("Una reserva terminada no se puede modificar.");
+                return;
+            }
+
+            MenuOpciones submenu = new MenuOpciones();
+            submenu.agregarOpcion("Cambiar fecha de ingreso", "ingreso");
+            submenu.agregarOpcion("Cambiar fecha de salida", "salida");
+            submenu.agregarOpcion("Cambiar ambas fechas", "ambas");
+            submenu.agregarOpcion("Cambiar habitación", "habitacion");
+            submenu.agregarOpcion("Volver", "volver", 'X');
+
+            boolean seguir = true;
+
+            while (seguir) {
+                System.out.println("\nReserva actual: " + reserva);
+                System.out.println(submenu.mostrarOpciones());
+                System.out.print("Elija lo que quiere cambiar:  ");
+
+                String linea = scanner.nextLine().trim();
+                char tecla = linea.isEmpty() ? '-' : linea.charAt(0);
+                String opcion = submenu.encontrarOpcion(tecla);
+
+                if (opcion == null) {
+                    System.out.println("Opción inválida");
+                    continue;
+                }
+
+                try {
+                    switch (opcion) {
+                        case "ingreso":
+                            cambiarFechaIngreso(reserva);
+                            break;
+                        case "salida":
+                            cambiarFechaSalida(reserva);
+                            break;
+                        case "ambas":
+                            cambiarAmbasFechas(reserva);
+                            break;
+                        case "habitacion":
+                            cambiarHabitacion(reserva);
+                            break;
+                        case "volver":
+                            seguir = false;
+                            break;
+                    }
+                } catch (java.time.format.DateTimeParseException e) {
+                    System.out.println("Formato de fecha inválido. Usá dd/MM/yyyy.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Debe ingresar un número válido.");
+                }
+            }
+
+        } catch (IdReservaInexistenteException e) {
+            System.out.println("No existe una reserva con ese id.");
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        }
+    }
+
+    private void cambiarFechaIngreso(Reservas reserva) {
+        LocalDateTime nuevoInicio = pedirFecha("Nueva fecha de ingreso (dd/MM/yyyy): ").atTime(14, 0);
+
+        if (nuevoInicio.isBefore(LocalDate.now().atStartOfDay())) {
+            System.out.println("La fecha de ingreso no puede estar en el pasado.");
+            return;
+        }
+
+        aplicarCambios(reserva, reserva.getIdHabitacion(), nuevoInicio, reserva.getCheckOut());
+    }
+
+    private void cambiarFechaSalida(Reservas reserva) {
+        LocalDateTime nuevoFin = pedirFecha("Nueva fecha de salida (dd/MM/yyyy): ").atTime(10, 0);
+
+        aplicarCambios(reserva, reserva.getIdHabitacion(), reserva.getCheckIn(), nuevoFin);
+    }
+
+    private void cambiarAmbasFechas(Reservas reserva) {
+        LocalDateTime nuevoInicio = pedirFecha("Nueva fecha de ingreso (dd/MM/yyyy): ").atTime(14, 0);
+        LocalDateTime nuevoFin = pedirFecha("Nueva fecha de salida (dd/MM/yyyy): ").atTime(10, 0);
+
+        if (nuevoInicio.isBefore(LocalDate.now().atStartOfDay())) {
+            System.out.println("La fecha de ingreso no puede estar en el pasado.");
+            return;
+        }
+
+        aplicarCambios(reserva, reserva.getIdHabitacion(), nuevoInicio, nuevoFin);
+    }
+
+    private void cambiarHabitacion(Reservas reserva) {
+        ArrayList<Integer> libres = gestorHotel.buscarHabitacionesFechaDisponibles(
+                reserva.getId(), reserva.getCheckIn(), reserva.getCheckOut());
+
+        libres.remove(Integer.valueOf(reserva.getIdHabitacion())); // la actual no es una opción de cambio
+
+        if (libres.isEmpty()) {
+            System.out.println("No hay otras habitaciones disponibles para esas fechas.");
+            return;
+        }
+
+        System.out.println("Habitación actual: " + reserva.getIdHabitacion());
+        System.out.println("Habitaciones disponibles: " + libres);
+        System.out.print("Id de la nueva habitación: ");
+        int nueva = Integer.parseInt(scanner.nextLine().trim());
+
+        if (!libres.contains(nueva)) {
+            System.out.println("Esa habitación no está disponible para esas fechas.");
+            return;
+        }
+
+        aplicarCambios(reserva, nueva, reserva.getCheckIn(), reserva.getCheckOut());
+    }
+
+    private void aplicarCambios(Reservas reserva, int idHabitacion, LocalDateTime inicio, LocalDateTime fin) {
+        // 1. fechas válidas
+        if (!inicio.isBefore(fin)) {
+            System.out.println("La fecha de salida debe ser posterior a la de ingreso.");
+            return;
+        }
+
+        // 2. disponibilidad (ignora la propia reserva)
+        if (!gestorHotel.fechaDisponible(reserva.getId(), idHabitacion, inicio, fin)) {
+            System.out.println("La habitación " + idHabitacion + " no está disponible en ese período.");
+            return;
+        }
+
+        // 3. guardar
+        try {
+            gestorHotel.modificarReserva(reserva.getId(), idHabitacion, inicio, fin);
+            System.out.println("Reserva modificada correctamente.");
+        } catch (IdReservaInexistenteException | FechaNoDisponibleException | FechaInvalidaException e) {
+            System.out.println("No se pudo modificar la reserva.");
+        }
+    }
+
+    private void cancelarReserva() {
+        try {
+            Reservas reserva = pedirReserva();
+            if (reserva == null) return;
+
+            System.out.print("¿Seguro que querés cancelar la reserva " + reserva.getId() + "? (S/N): ");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("S")) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            if (gestorHotel.eliminarReserva(reserva.getId())) {
+                System.out.println("Reserva cancelada.");
+            } else {
+                System.out.println("No se pudo cancelar la reserva.");
+            }
+
+        } catch (IdReservaInexistenteException e) {
+            System.out.println("No existe una reserva con ese id.");
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        }
+    }
+
+    private void mostrarFechasLibres(Integer idReserva, int idHabitacion) {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        ArrayList<LocalDate> libres = gestorHotel.fechasLibres(idReserva, idHabitacion, 30);
+
+        if (libres.isEmpty()) {
+            System.out.println("La habitación " + idHabitacion + " no tiene noches libres en los próximos 30 días.");
+            return;
+        }
+
+        System.out.println("Noches libres de la habitación " + idHabitacion + " (próximos 30 días):");
+        StringBuilder linea = new StringBuilder();
+        for (int i = 0; i < libres.size(); i++) {
+            linea.append(libres.get(i).format(formato)).append("  ");
+            if ((i + 1) % 5 == 0) {
+                System.out.println(linea.toString().trim());
+                linea.setLength(0);
+            }
+        }
+        if (linea.length() > 0) {
+            System.out.println(linea.toString().trim());
+        }
+        System.out.println("(la salida puede ser el día siguiente a la última noche elegida)");
+    }
+
+    public void verCuenta(){
+        if (gestorHotel.getCuentaActual().isPermisoManejarCuentas()) {
+            mostrarTexto(gestorHotel.listarCuentas(), "No hay Cuentas para mostrar.");
+        } else {
+            gestorHotel.getCuentaActual();
+        }
+    }
+
+    private void crearHabitacion() {
+        try {
+            System.out.print("Piso: ");
+            int piso = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("Número de departamento: ");
+            int numero = Integer.parseInt(scanner.nextLine().trim());
+
+            if (gestorHotel.existeHabitacion(piso, numero)) {
+                System.out.println("Ya existe una habitación en el piso " + piso + " con el número " + numero + ".");
+                return;
+            }
+
+            Habitaciones nueva = new Habitaciones(null, piso, numero, RazonesOcupada.LIBRE);
+
+            if (gestorHotel.agregarHabitacion(nueva)) {
+                System.out.println("Habitación creada correctamente.");
+            } else {
+                System.out.println("No se pudo crear la habitación.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        }
+    }
+
+    private void borrarHabitacion() {
+        try {
+            System.out.println("Habitaciones: " + gestorHotel.listarIdsHabitaciones());
+            System.out.print("Id de la habitación a borrar: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+
+            System.out.print("¿Seguro que querés borrar la habitación " + id + "? (S/N): ");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("S")) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            if (gestorHotel.eliminarHabitacion(id)) {
+                System.out.println("Habitación borrada.");
+            } else {
+                System.out.println("No se pudo borrar la habitación.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        } catch (IdHabitacionNoEncontradoException e) {
+            System.out.println("No existe esa habitación.");
+        }
+    }
+
+    private void cambiarEstadoHabitacion() {
+        try {
+            System.out.println("Habitaciones: " + gestorHotel.listarIdsHabitaciones());
+            System.out.print("Id de la habitación: ");
+            int id = Integer.parseInt(scanner.nextLine().trim());
+
+            if (gestorHotel.buscarPorClave(id) == null) {
+                System.out.println("No existe esa habitación.");
+                return;
+            }
+
+            System.out.println("1. Libre");
+            System.out.println("2. Ocupada");
+            System.out.println("3. Limpiando");
+            System.out.println("4. Reparando");
+            System.out.println("5. Desinfectando");
+            System.out.println("6. Sin especificar");
+            System.out.print("Nuevo estado: ");
+            int eleccion = Integer.parseInt(scanner.nextLine().trim());
+
+            RazonesOcupada nuevo;
+            switch (eleccion) {
+                case 1:
+                    nuevo = RazonesOcupada.LIBRE;
+                    break;
+                case 2:
+                    nuevo = RazonesOcupada.OCUPADA;
+                    break;
+                case 3:
+                    nuevo = RazonesOcupada.LIMPIANDO;
+                    break;
+                case 4:
+                    nuevo = RazonesOcupada.REPARANDO;
+                    break;
+                case 5:
+                    nuevo = RazonesOcupada.DESINFECTANDO;
+                    break;
+                case 6:
+                    nuevo = RazonesOcupada.SIN;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+                    return;
+            }
+
+            gestorHotel.modificarHabitacion(id, nuevo);
+            System.out.println("Estado actualizado.");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        } catch (IdHabitacionNoEncontradoException e) {
+            System.out.println("No existe esa habitación.");
+        }
     }
 
 }

@@ -15,6 +15,8 @@ public class Admins extends Cuentas {
         permisoVerHabitaciones = true;
         permisoManejarHabitaciones = true;
         permisoCrearCuentas = true;
+        permisoCrearHabitaciones=true;
+        permisoHacerBackup=true;
 
     }
 
@@ -23,48 +25,48 @@ public class Admins extends Cuentas {
     }
 
     @Override
+    public boolean isPermisoCrearHabitaciones() {
+        return true;
+    }
+
+    @Override
+    protected void asignarPermisos() {
+        permisoManejarReservas = true;
+        permisoManejarHabitaciones = true;
+        permisoManejarCuentas = true;
+        permisoVerHabitaciones = true;
+        permisoCrearCuentas = true;
+        permisoCrearHabitaciones = true;
+        permisoHacerBackup = true;
+    }
+
+    @Override
     public String getRol() {
         return RolesCuenta.ADMINISTRADOR.name();
     }
 
     @Override
-    public boolean puedeCrearCuenta() {
-        return true;
+    public boolean isPermisoCrearCuentas() {
+        return super.isPermisoCrearCuentas();
     }
 
     @Override
-    public boolean puedeEliminarCuenta() {
-        return true;
+    public boolean isPermisoManejarCuentas() {
+        return super.isPermisoManejarCuentas();
     }
 
     @Override
-    public boolean puedeCrearReserva() {
-        return true;
+    public boolean isPermisoManejarHabitaciones() {
+        return super.isPermisoManejarHabitaciones();
     }
 
     @Override
-    public boolean puedeModificarReserva() {
-        return true;
+    public boolean isPermisoManejarReservas() {
+        return super.isPermisoManejarReservas();
     }
 
     @Override
-    public boolean puedeCancelarReserva() {
-        return true;
+    public boolean isPermisoVerHabitaciones() {
+        return super.isPermisoVerHabitaciones();
     }
-
-    @Override
-    public boolean puedeHacerCheckInOut() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeHacerBackup() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeVerReservas() {
-        return true;
-    }
-
 }
