@@ -2,20 +2,21 @@ import Clases.Admins;
 import Clases.Clientes;
 import Clases.Cuentas;
 import Clases.Staff;
+import Conexiones.Conexion;
 import Enumeradores.GuiEstados;
-import Gestores.GestorCuentas;
+import Enumeradores.RolesCuenta;
+import Gestores.GestorHotel;
 import Excepciones.ErrorLoginException;
 import java.util.Scanner;
 
 public class Menu {
 
     private GuiEstados estado = GuiEstados.INICIAR_SESION;
-    private GuiEstados menuPrincipal;      // guarda el menu al que lleva la opción volver en los gestores
-    private GestorCuentas gestorCuentas;
+    private GestorHotel gestorHotel;
     private Scanner scanner = new Scanner(System.in);
 
-    public Menu(GestorCuentas gestorCuentas) {
-        this.gestorCuentas = gestorCuentas;
+    public Menu(GestorHotel gestorHotel) {
+        this.gestorHotel = gestorHotel;
     }
 
     private MenuOpciones armarMenu(){
@@ -27,35 +28,47 @@ public class Menu {
                 menu.agregarOpcion("Salir", "salir", 'X');
                 break;
 
-            case MENU_STAFF:
-                menu.agregarOpcion("Reservas", "irReservas");
+            case MENU_PRINCIPAL:
+                if (gestorHotel.getCuentaActual().isPermisoCrearReserva()
+                        || gestorHotel.getCuentaActual().isPermisoModificarReserva()
+                        || gestorHotel.getCuentaActual().isPermisoCancelarReserva())
+                    menu.agregarOpcion("Reservas", "irReservas");
+
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()
+                        || gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                    menu.agregarOpcion("Cuentas", "irCuentas");
+
                 menu.agregarOpcion("Habitaciones", "irHabitaciones");
-                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
-                break;
-
-            case MENU_CLIENTE:
-                menu.agregarOpcion("Mis reservas", "misReservas");
-                menu.agregarOpcion("Solicitar reserva", "solicitarReserva");
-                menu.agregarOpcion("Cerrar sesión", "logout", 'X');
-                break;
-
-            case MENU_ADMIN:
-                menu.agregarOpcion("Gestionar cuentas", "irCuentas");
-                menu.agregarOpcion("Hacer backup", "backup");
                 menu.agregarOpcion("Cerrar sesión", "logout", 'X');
                 break;
 
             case GESTION_HABITACIONES:
                 menu.agregarOpcion("Ver disponibles", "verDisponibles");
-                menu.agregarOpcion("Ver ocupadas", "verOcupadas");
-                menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                if (gestorHotel.getCuentaActual().isPermisoCrearHabitacion()){
+                    menu.agregarOpcion("Ver ocupadas", "verOcupadas");
+                    menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
+                }
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
             case GESTION_RESERVAS:
-                menu.agregarOpcion("Nueva reserva", "nuevaReserva");
-                menu.agregarOpcion("Check-in", "checkIn");
-                menu.agregarOpcion("Check-out", "checkOut");
+                menu.agregarOpcion("Ver reservas", "verReservas");
+                if (gestorHotel.getCuentaActual().isPermisoCrearReserva())
+                    menu.agregarOpcion("Nueva reserva", "nuevaReserva");
+                if (gestorHotel.getCuentaActual().isPermisoModificarReserva())
+                    menu.agregarOpcion("Modificar reserva", "modificarReserva");
+                if (gestorHotel.getCuentaActual().isPermisoCancelarReserva())
+                    menu.agregarOpcion("Cancelar reserva", "cancelarReserva");
+                menu.agregarOpcion("Volver", "volver", 'X');
+                break;
+
+            case GESTION_CUENTAS:
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta())
+                    menu.agregarOpcion("Ver cuentas", "verCuentas");
+                    menu.agregarOpcion("Crear cuenta", "crearCuenta");
+                if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                    menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
+                menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
@@ -75,28 +88,17 @@ public class Menu {
                 System.out.print("Contraseña: ");
                 String contrasenia = scanner.nextLine();
 
-                Cuentas cuentaActual;
-
                 try {
-                    cuentaActual = gestorCuentas.login(usuario, contrasenia);
+                    gestorHotel.login(usuario, contrasenia);
                 } catch (ErrorLoginException e) {
                     System.out.println(e.getMessage());
                     return estado;
                 }
 
-                if (cuentaActual instanceof Admins)
-                    menuPrincipal = GuiEstados.MENU_ADMIN;
-                else if (cuentaActual instanceof Staff)
-                    menuPrincipal = GuiEstados.MENU_STAFF;
-                else if (cuentaActual instanceof Clientes)
-                    menuPrincipal = GuiEstados.MENU_CLIENTE;
-                else
-                    return estado;   // tirar error
-
-                return menuPrincipal;
+                return GuiEstados.MENU_PRINCIPAL;
 
             case "volver":
-                return menuPrincipal;
+                return GuiEstados.MENU_PRINCIPAL;
 
             case "irReservas":
                 return GuiEstados.GESTION_RESERVAS;
@@ -104,8 +106,62 @@ public class Menu {
             case "irHabitaciones":
                 return GuiEstados.GESTION_HABITACIONES;
 
+            case "irCuentas":
+                return GuiEstados.GESTION_CUENTAS;
+
+            case "verDisponibles":
+                mostrarTexto(gestorHotel.listarHabitacionesDisponibles(), "No hay habitaciones disponibles.");
+                return estado;
+
+            case "verTodas":
+                mostrarTexto(gestorHotel.listarHabitaciones(), "No hay habitaciones cargadas.");
+                return estado;
+
+            case "verCuentas":
+                mostrarTexto(gestorHotel.listarCuentas(), "No hay cuentas cargadas.");
+                return estado;
+
+            case "crearCuenta":
+                gestorHotel.agregarCuenta();
+                return estado;
+
+            case "eliminarCuenta":
+            case "restaurarCuenta": {
+                boolean eliminar = opcion.equals("eliminarCuenta");
+
+                System.out.print("Usuario de la cuenta: ");
+                Cuentas cuenta = gestorHotel.buscarCuentaPorUsuario(scanner.nextLine().trim());
+
+                if (cuenta == null) {
+                    System.out.println("No existe esa cuenta.");
+                } else if (eliminar && cuenta.getId().equals(gestorHotel.getCuentaActual().getId())) {
+                    System.out.println("No podés eliminar tu propia cuenta.");
+                } else if (Conexion.eliminarCuenta(cuenta, eliminar)) {   // actualiza base y objeto
+                    System.out.println(eliminar ? "Cuenta eliminada." : "Cuenta restaurada.");
+                } else {
+                    System.out.println("No se pudo actualizar la cuenta.");
+                }
+                return estado;
+            }
+
+            case "verReservas":
+                mostrarTexto(gestorHotel.listarReservas(), "No hay reservas para mostrar.");
+                return estado;
+
+            case "nuevaReserva":
+                gestorHotel.agregarReserva();
+                return estado;
+
+            case "modificarReserva":
+                gestorHotel.modificarReserva();
+                return estado;
+
+            case "cancelarReserva":
+                gestorHotel.eliminarReserva();
+                return estado;
+
             case "logout":
-                gestorCuentas.logout();
+                gestorHotel.logout();
                 return GuiEstados.INICIAR_SESION;
 
             case "salir":
@@ -136,4 +192,13 @@ public class Menu {
             }
         }
     }
+
+    //funciones auxiliares
+    private void mostrarTexto(String texto, String mensajeVacio) {
+        if (texto == null || texto.isEmpty())
+            System.out.println(mensajeVacio);
+        else
+            System.out.println(texto);
     }
+
+}

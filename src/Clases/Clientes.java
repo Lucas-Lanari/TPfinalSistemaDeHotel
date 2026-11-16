@@ -14,6 +14,13 @@ public class Clientes extends Cuentas {
 
         this.paisOrigen = paisOrigen;
         this.domicilioOrigen = domicilioOrigen;
+
+        permisoCrearReserva=true;
+        permisoCancelarReserva=true;
+        permisoModificarReserva=true;
+
+        permisoCrearCuenta=false;
+        permisoEliminarCuenta=false;
     }
 
     public Clientes(ResultSet resultadoCuenta, ResultSet resultadoDatosAdicional) throws SQLException {
