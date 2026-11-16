@@ -11,8 +11,8 @@ import java.util.HashSet;
 
 public class Reservas {
     private Integer id;
-    private int idHabitacion;
-    private int idCuentaResponsable;
+    private Integer idHabitacion;
+    private Integer idCuentaResponsable;
     public HashSet<String> dniIntegrantes;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
@@ -41,7 +41,7 @@ public class Reservas {
         this.id = id;
     }
 
-    public int getIdHabitacion() {
+    public Integer getIdHabitacion() {
         return idHabitacion;
     }
 
@@ -49,7 +49,7 @@ public class Reservas {
         this.idHabitacion = idHabitacion;
     }
 
-    public int getIdCuentaResponsable() {
+    public Integer getIdCuentaResponsable() {
         return idCuentaResponsable;
     }
 
