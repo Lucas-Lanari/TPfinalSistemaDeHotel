@@ -1,12 +1,27 @@
 package Gestores;
 
 import Clases.Cuentas;
+import Clases.Habitaciones;
+import Conexiones.Conexion;
 import Excepciones.*;
+
+import java.sql.SQLException;
+import java.util.HashSet;
 
 public class GestorCuentas extends Contenedor<Cuentas> {
 
     private Cuentas cuentaActual; //para el logueo
 
+    public GestorCuentas() throws SQLException {
+        super();
+
+        HashSet<Cuentas> cuentas = Conexion.listarCuentas();
+
+        for (Cuentas cuenta : cuentas) {
+            super.agregar(cuenta);
+        }
+
+    }
 
     public Cuentas buscarCuentaPorId(Integer id) {
         for (Cuentas actual: lista) {
@@ -68,6 +83,10 @@ public class GestorCuentas extends Contenedor<Cuentas> {
             throw new UsuarioExistenteException("El nombre de usuario ya está registrado.");
         }
 
+        if (!Conexion.crearCuenta(nueva))
+            return false;
+
+
         agregar(nueva);
         return true;
     }
@@ -76,6 +95,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setNombre(nombre);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -88,6 +108,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual : lista) {
             if (actual.getId().equals(id)) {
                 actual.setNombreUsuario(nombreUsuario);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -98,6 +119,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setDni(dni);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -109,6 +131,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setContrasenia(contrasenia);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -120,6 +143,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setEstaEliminado(nuevoEstado);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
