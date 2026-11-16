@@ -25,15 +25,9 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
 
     }
 
-    public ArrayList<Integer> listarIdsHabitacionesHabilitadas() {
+    public ArrayList<Integer> listarIdsHabitaciones() {
 
-        ArrayList<Integer> resultados = new ArrayList<>();
-
-        for (Habitaciones habitacion : mapa.values()) {
-            if (habitacion.getOcupacion()==RazonesOcupada.LIBRE) {
-                resultados.add(habitacion.getId());
-            }
-        }
+        ArrayList<Integer> resultados = new ArrayList<>(mapa.keySet());
 
         return resultados;
     }
