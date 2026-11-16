@@ -8,14 +8,21 @@ import Gestores.GestorHotel;
 public class Main {
     public static void main(String[] args) throws SQLException {
 
-        GestorHotel gestorHotel = new GestorHotel();
+        GestorHotel gestorHotel;
+
+        try {
+            gestorHotel = new GestorHotel();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
         try {
             Conexion.inicializar();
 
-            for (Cuentas c : Conexion.listarCuentas()) {
-                gestorHotel.agregarCuenta(c);
-            }
+//            for (Cuentas c : Conexion.listarCuentas()) {
+//                gestorHotel.crearCuenta(c);
+//            }
 
             new Menu(gestorHotel).ejecutar();
 
