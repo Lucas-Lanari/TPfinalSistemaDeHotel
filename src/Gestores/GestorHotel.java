@@ -91,6 +91,14 @@ public class GestorHotel {
         return gestorCuentas.crearCuenta(nueva);
     }
 
+    public void agregarCuenta(Cuentas nuevo) {
+        gestorCuentas.agregar(nuevo);
+    }
+
+    public String listarCuentas() {
+        return gestorCuentas.mostrar();
+    }
+
     public Cuentas buscarCuentaPorId(Integer id) {
         return gestorCuentas.buscarCuentaPorId(id);
     }

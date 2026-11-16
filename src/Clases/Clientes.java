@@ -15,10 +15,8 @@ public class Clientes extends Cuentas {
         this.paisOrigen = paisOrigen;
         this.domicilioOrigen = domicilioOrigen;
 
-        permisoCrearReserva=true;
-        permisoCancelarReserva=true;
-        permisoModificarReserva=true;
-
+        permisoManejarReservas=false;
+        permisoVerHabitaciones = false;
         permisoCrearCuenta=false;
         permisoEliminarCuenta=false;
     }
