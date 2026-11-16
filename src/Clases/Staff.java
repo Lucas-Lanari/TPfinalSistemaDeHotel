@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class Staff extends Cuentas {
 
-    public Staff(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
+    public Staff(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
     }
 

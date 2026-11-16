@@ -13,7 +13,7 @@ public class Reservas {
     private Integer id;
     private Integer idHabitacion;
     private Integer idCuentaResponsable;
-    public HashSet<String> dniIntegrantes;
+    private HashSet<String> dniIntegrantes;
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
     private EstadoReserva estado;
@@ -37,7 +37,7 @@ public class Reservas {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -90,6 +90,17 @@ public class Reservas {
     }
 
     public HashSet<String> listarDniIntegrantes() {
-        return dniIntegrantes;
+        return new HashSet<>(dniIntegrantes);
     }
+
+    public String toString() {
+        return "Reserva nro " + id +
+                "\nHabitacion: " + idHabitacion +
+                "\nCuenta responsable: " + idCuentaResponsable +
+                "\nDNI integrantes: " + dniIntegrantes +
+                "\nCheck-in: " + checkIn +
+                "\nCheck-out: " + checkOut +
+                "\nEstado: " + estado + "\n";
+    }
+
 }

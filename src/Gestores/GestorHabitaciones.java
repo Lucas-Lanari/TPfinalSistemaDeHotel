@@ -49,7 +49,7 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
             throw new IdHabitacionNoEncontradoException();
 
         try {
-            if (Conexion.eliminarHabitacion(buscarPorClave(idHabitacion)))
+            if (!Conexion.eliminarHabitacion(buscarPorClave(idHabitacion)))
                 return false;
         } catch (SQLException e) {
             return false;

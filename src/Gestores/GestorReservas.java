@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
 import static Conexiones.Conexion.*;
 
@@ -99,7 +100,7 @@ public class GestorReservas extends Contenedor<Reservas> {
 
         //agregamos las reservas donde se aparezca el dni del pasajero
         for (Reservas actual : lista) {
-            for (String dni : actual.dniIntegrantes) {
+            for (String dni : actual.listarDniIntegrantes()) {
                 if (dniPasajero.equals(dni)) {
                     respuesta.append(actual.toString());
                     respuesta.append("\n");
@@ -116,13 +117,51 @@ public class GestorReservas extends Contenedor<Reservas> {
         StringBuilder respuesta = new StringBuilder();
 
         for (Reservas actual : lista) {
-            if (actual.getIdCuentaResponsable() == idCuenta) {
+            if (Objects.equals(actual.getIdCuentaResponsable(), idCuenta)) {
                 respuesta.append(actual.toString());
                 respuesta.append("\n");
             }
         }
 
         return respuesta.toString();
+    }
+
+    public boolean agregarDniReserva(int idReserva, String dni) {
+
+        Reservas reserva;
+
+        try {
+            reserva = buscarReserva(idReserva);
+        } catch (IdReservaInexistenteException e) {
+            reserva = null;
+        }
+
+        if (reserva == null)
+            return false;
+
+        reserva.agregarDniIntegrante(dni);
+        Conexion.actualizarReserva(reserva);
+
+        return true;
+    }
+
+    public boolean eliminarDniReserva(int idReserva, String dni) {
+
+        Reservas reserva;
+
+        try {
+            reserva = buscarReserva(idReserva);
+        } catch (IdReservaInexistenteException e) {
+            reserva = null;
+        }
+
+        if (reserva == null)
+            return false;
+
+        reserva.quitarDniIntegrante(dni);
+        Conexion.actualizarReserva(reserva);
+
+        return true;
     }
 
     public Reservas buscarReserva(Integer idReserva) throws IdReservaInexistenteException {

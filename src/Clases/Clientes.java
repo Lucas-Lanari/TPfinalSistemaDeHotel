@@ -9,7 +9,7 @@ public class Clientes extends Cuentas {
     private String paisOrigen;
     private String domicilioOrigen;
 
-    public Clientes(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado, String paisOrigen, String domicilioOrigen) {
+    public Clientes(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado, String paisOrigen, String domicilioOrigen) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
         this.paisOrigen = paisOrigen;

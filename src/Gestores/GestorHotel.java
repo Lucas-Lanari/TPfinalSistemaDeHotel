@@ -191,9 +191,17 @@ public class GestorHotel {
         return gestorReservas.modificarReserva(idReserva, idHabitacion, nuevaFechaInicio, nuevaFechaFin);
     }
 
+    public boolean agregarDniReserva(int idReserva, String dni) {
+        return gestorReservas.agregarDniReserva(idReserva, dni);
+    }
+
+    public boolean eliminarDniReserva(int idReserva, String dni) {
+        return gestorReservas.eliminarDniReserva(idReserva, dni);
+    }
 
 
-    public ArrayList<LocalDate> fechasLibres(Integer idReserva, Integer idHabitacion, int dias) {
+
+        public ArrayList<LocalDate> fechasLibres(Integer idReserva, Integer idHabitacion, int dias) {
         return gestorReservas.fechasLibres(idReserva, idHabitacion, dias);
     }
 

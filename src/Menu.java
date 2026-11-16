@@ -3,6 +3,7 @@ import Conexiones.Conexion;
 import Enumeradores.EstadoReserva;
 import Enumeradores.GuiEstados;
 import Enumeradores.RazonesOcupada;
+import Enumeradores.RolesCuenta;
 import Excepciones.*;
 import Gestores.GestorHotel;
 
@@ -32,9 +33,7 @@ public class Menu {
                 break;
 
             case MENU_PRINCIPAL:
-                if (gestorHotel.getCuentaActual().isPermisoManejarCuentas()) {
-                    menu.agregarOpcion("Cuentas", "irCuentas");
-                }
+                menu.agregarOpcion("Cuentas", "irCuentas");
                 menu.agregarOpcion("Habitaciones", "irHabitaciones");
                 menu.agregarOpcion("Reservas", "irReservas");
                 menu.agregarOpcion("Cerrar sesión", "logout", 'X');
@@ -58,9 +57,11 @@ public class Menu {
                 menu.agregarOpcion("Nueva reserva", "nuevaReserva");
 
                 if (gestorHotel.getCuentaActual().isPermisoManejarReservas()) {
+                    menu.agregarOpcion("Ver reservas", "verReservas");
                     menu.agregarOpcion("Modificar reserva", "modificarReserva");
                     menu.agregarOpcion("Cancelar reserva", "cancelarReserva");
                 } else {
+                    menu.agregarOpcion("Ver reservas", "verReservas");
                     menu.agregarOpcion("Modificar mis reservas", "modificarReserva");
                     menu.agregarOpcion("Cancelar mi reserva", "cancelarReserva");
                 }
@@ -283,8 +284,8 @@ public class Menu {
             }
 
             Cuentas nueva = switch (opcionCrear) {
-                case 1 -> new Admins(0, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
-                case 2 -> new Staff(0, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
+                case 1 -> new Admins(null, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
+                case 2 -> new Staff(null, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
                 case 3 -> {
                     System.out.println("Ingrese país de origen:");
                     String pais = scanner.nextLine();
@@ -300,14 +301,17 @@ public class Menu {
                         throw new IllegalArgumentException("El domicilio no puede estar vacío.");
                     }
 
-                    yield new Clientes(0, dni, nombre, usuarioNuevo,
+                    yield new Clientes(null, dni, nombre, usuarioNuevo,
                             contraseniaNuevo, false, pais, domicilio);
                 }
                 default -> throw new IllegalArgumentException("Opción inválida.");
             };
 
-            gestorHotel.crearCuenta(nueva);
-            System.out.println("Cuenta creada correctamente.");
+            if (gestorHotel.crearCuenta(nueva)) {
+                System.out.println("Cuenta creada correctamente.");
+            } else {
+                System.out.println("Hubo un error al crear la cuenta.");
+            }
 
         } catch (DniExistenteException | UsuarioExistenteException e) {
             System.out.println(e.getMessage());
@@ -348,9 +352,34 @@ public class Menu {
             }
 
             ArrayList<String> dnis = new ArrayList<>();
+            String dni;
+
+            boolean esCliente = gestorHotel.getCuentaActual().getRol()
+                    .equals(RolesCuenta.CLIENTE.name());
+
+            if (esCliente) {
+                dnis.add(gestorHotel.getCuentaActual().getDni());
+            } else {
+                while (true) {
+                    System.out.print("DNI del pasajero: ");
+                    dni = scanner.nextLine().trim();
+
+                    if (dni.isEmpty()) {
+                        System.out.println("El DNI no puede estar vacío.");
+                    } else if (!dni.matches("\\d{1,9}")) {
+                        System.out.println("El DNI debe contener entre 1 y 9 números.");
+                    } else {
+                        dnis.add(dni);
+                        break;
+                    }
+                }
+            }
+
             String seguir;
-            do {
-                String dni;
+            System.out.print("¿Querés agregar otro pasajero? (S/N): ");
+            seguir = scanner.nextLine().trim();
+
+            while (seguir.equalsIgnoreCase("S")) {
                 while (true) {
                     System.out.print("DNI del pasajero: ");
                     dni = scanner.nextLine().trim();
@@ -367,19 +396,19 @@ public class Menu {
                 }
 
                 dnis.add(dni);
+
                 System.out.print("¿Agregar otro pasajero? (S/N): ");
                 seguir = scanner.nextLine().trim();
-
-            } while (seguir.equalsIgnoreCase("S"));
+            }
 
             Reservas nueva = new Reservas(null, idHabitacion, gestorHotel.getCuentaActual().getId(),
                     inicio, fin, EstadoReserva.ACTIVA);
 
-            for (String dni : dnis) {
-                nueva.dniIntegrantes.add(dni);
-            }
-
             if (gestorHotel.agregarReserva(nueva)) {
+                for (String d : dnis) {
+                    gestorHotel.agregarDniReserva(nueva.getId(),d);
+                }
+
                 System.out.println("Reserva creada correctamente.");
             } else {
                 System.out.println("No se pudo crear la reserva.");
@@ -440,6 +469,7 @@ public class Menu {
             submenu.agregarOpcion("Cambiar fecha de salida", "salida");
             submenu.agregarOpcion("Cambiar ambas fechas", "ambas");
             submenu.agregarOpcion("Cambiar habitación", "habitacion");
+            submenu.agregarOpcion("Modificar integrantes", "integrantes");
             submenu.agregarOpcion("Volver", "volver", 'X');
 
             boolean seguir = true;
@@ -471,6 +501,9 @@ public class Menu {
                             break;
                         case "habitacion":
                             cambiarHabitacion(reserva);
+                            break;
+                        case "integrantes":
+                            modificarIntegrantes(reserva);
                             break;
                         case "volver":
                             seguir = false;
@@ -617,8 +650,7 @@ public class Menu {
         if (gestorHotel.getCuentaActual().isPermisoManejarCuentas()) {
             mostrarTexto(gestorHotel.listarCuentas(), "No hay Cuentas para mostrar.");
         } else {
-            gestorHotel.getCuentaActual();
-        }
+            System.out.println(gestorHotel.getCuentaActual());        }
     }
 
     private void crearHabitacion() {
@@ -724,6 +756,91 @@ public class Menu {
             System.out.println("Debe ingresar un número válido.");
         } catch (IdHabitacionNoEncontradoException e) {
             System.out.println("No existe esa habitación.");
+        }
+    }
+
+
+    private void modificarIntegrantes(Reservas reserva) {
+        MenuOpciones submenu = new MenuOpciones();
+        submenu.agregarOpcion("Agregar pasajero", "agregar");
+        submenu.agregarOpcion("Quitar pasajero", "quitar");
+        submenu.agregarOpcion("Volver", "volver", 'X');
+
+        boolean seguir = true;
+
+        while (seguir) {
+            System.out.println("\nPasajeros actuales: " + reserva.listarDniIntegrantes());
+            System.out.println(submenu.mostrarOpciones());
+            System.out.print("? ");
+
+            String linea = scanner.nextLine().trim();
+            char tecla = linea.isEmpty() ? '-' : linea.charAt(0);
+            String opcion = submenu.encontrarOpcion(tecla);
+
+            if (opcion == null) {
+                System.out.println("Opción inválida");
+                continue;
+            }
+
+            switch (opcion) {
+                case "agregar":
+                    agregarIntegrante(reserva);
+                    break;
+                case "quitar":
+                    quitarIntegrante(reserva);
+                    break;
+                case "volver":
+                    seguir = false;
+                    break;
+            }
+        }
+    }
+
+    private String pedirDni() {
+        System.out.print("DNI del pasajero: ");
+        String dni = scanner.nextLine().trim();
+
+        if (!dni.matches("\\d{1,9}")) {
+            System.out.println("El DNI debe contener entre 1 y 9 números.");
+            return null;
+        }
+        return dni;
+    }
+
+    private void agregarIntegrante(Reservas reserva) {
+        String dni = pedirDni();
+        if (dni == null) return;
+
+        if (reserva.listarDniIntegrantes().contains(dni)) {
+            System.out.println("Ese DNI ya está en la reserva.");
+            return;
+        }
+
+        if (gestorHotel.agregarDniReserva(reserva.getId(), dni)) {
+            System.out.println("Pasajero agregado.");
+        } else {
+            System.out.println("No se pudo agregar el pasajero.");
+        }
+    }
+
+    private void quitarIntegrante(Reservas reserva) {
+        if (reserva.listarDniIntegrantes().size() <= 1) {
+            System.out.println("La reserva tiene que tener al menos un pasajero.");
+            return;
+        }
+
+        String dni = pedirDni();
+        if (dni == null) return;
+
+        if (!reserva.listarDniIntegrantes().contains(dni)) {
+            System.out.println("Ese DNI no está en la reserva.");
+            return;
+        }
+
+        if (gestorHotel.eliminarDniReserva(reserva.getId(), dni)) {
+            System.out.println("Pasajero quitado.");
+        } else {
+            System.out.println("No se pudo quitar el pasajero.");
         }
     }
 
