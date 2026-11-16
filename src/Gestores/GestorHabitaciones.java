@@ -6,6 +6,7 @@ import Enumeradores.RazonesOcupada;
 import Excepciones.IdHabitacionNoEncontradoException;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,19 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
             super.agregar(habitacion.getId(), habitacion);
         }
 
+    }
+
+    public ArrayList<Integer> listarIdsHabitacionesHabilitadas() {
+
+        ArrayList<Integer> resultados = new ArrayList<>();
+
+        for (Habitaciones habitacion : mapa.values()) {
+            if (habitacion.getOcupacion()==RazonesOcupada.LIBRE) {
+                resultados.add(habitacion.getId());
+            }
+        }
+
+        return resultados;
     }
 
     public boolean agregar(Habitaciones habitacion) {
