@@ -67,7 +67,7 @@ public class GestorReservas extends Contenedor<Reservas> {
         return respuesta.toString();
     }
 
-    public String listarReservasPorCuenta(int idCuenta) {
+    public String listarReservasPorCuenta(Integer idCuenta) {
         StringBuilder respuesta = new StringBuilder();
 
         for (Reservas actual : lista) {

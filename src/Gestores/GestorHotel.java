@@ -164,8 +164,8 @@ public class GestorHotel {
         return actual != null && RolesCuenta.CLIENTE.name().equals(actual.getRol());
     }
 
-    public boolean fechaDisponible(int idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) throws FechaNoDisponibleException {
-        return gestorReservas.fechaDisponible(idReserva, fechaInicio, fechaFin);
+    public boolean fechaDisponible(Integer idReserva, Integer idHabitacion,LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return gestorReservas.fechaDisponible(idReserva, idHabitacion, fechaInicio, fechaFin);
     }
 
     private String listarReservasPorIdHabitacion(Integer idHabitacion) {
