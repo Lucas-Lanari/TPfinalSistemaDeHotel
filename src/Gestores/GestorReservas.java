@@ -3,6 +3,7 @@ package Gestores;
 
 import Clases.Habitaciones;
 import Clases.Reservas;
+import Conexiones.Conexion;
 import Enumeradores.EstadoReserva;
 import Enumeradores.RazonesOcupada;
 import Excepciones.FechaInvalidaException;
@@ -10,10 +11,53 @@ import Excepciones.FechaNoDisponibleException;
 import Excepciones.HabitacionNoDisponibleException;
 import Excepciones.IdReservaInexistenteException;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
+
+import static Conexiones.Conexion.*;
 
 public class GestorReservas extends Contenedor<Reservas> {
+
+    public GestorReservas() throws SQLException {
+        super();
+
+        HashSet<Reservas> reservas = Conexion.listarReservas();
+
+        for (Reservas reserva : reservas) {
+            super.agregar(reserva);
+        }
+
+    }
+
+    public boolean agregarReserva(Reservas reserva) {
+
+        if (!Conexion.agregarReserva(reserva))
+            return false;
+
+        super.agregar(reserva);
+
+        return true;
+    }
+
+    public boolean eliminarReserva(int id) {
+
+        Reservas aEliminar;
+
+        try {
+            aEliminar = buscarReserva(id);
+        } catch (IdReservaInexistenteException e) {
+            return false;
+        }
+
+        if (!Conexion.eliminarReserva(aEliminar))
+            return false;
+
+        eliminar(aEliminar);
+
+        return true;
+    }
 
     public boolean fechaDisponible(Integer idReserva, Integer idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 
@@ -111,6 +155,8 @@ public class GestorReservas extends Contenedor<Reservas> {
         reservaElegida.setIdHabitacion(idHabitacion);
         reservaElegida.setCheckIn(nuevaFechaInicio);
         reservaElegida.setCheckOut(nuevaFechaFin);
+
+        Conexion.actualizarReserva(reservaElegida);
 
         return true;
     }

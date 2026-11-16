@@ -61,8 +61,8 @@ public class GestorHotel {
         return false;
     }
 
-    public Habitaciones eliminarHabitacion(Habitaciones habitacion) {
-        return gestorHabitaciones.quitar(habitacion.getId());
+    public Habitaciones eliminarHabitacion(int idHabitacion) {
+        return gestorHabitaciones.quitar(idHabitacion);
     }
 
     public String listarHabitaciones() {
@@ -93,10 +93,6 @@ public class GestorHotel {
 
     public void agregarCuenta(Cuentas nuevo) {
         gestorCuentas.agregar(nuevo);
-    }
-
-    public void eliminarCuenta (Cuentas elemento) {
-        gestorCuentas.eliminar(elemento);
     }
 
     public String listarCuentas() {
@@ -150,11 +146,11 @@ public class GestorHotel {
     //metodos del gestorReservas
 
     public void agregarReserva(Reservas nuevo) {
-        gestorReservas.agregar(nuevo);
+        gestorReservas.agregarReserva(nuevo);
     }
 
-    public void eliminarReserva(Reservas elemento) {
-        gestorReservas.eliminar(elemento);
+    public void eliminarReserva(int id) {
+        gestorReservas.eliminarReserva(id);
     }
 
     public String listarReservas() {
