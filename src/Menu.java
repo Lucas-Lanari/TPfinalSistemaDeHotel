@@ -12,7 +12,6 @@ import java.util.Scanner;
 public class Menu {
 
     private GuiEstados estado = GuiEstados.INICIAR_SESION;
-    private GuiEstados menuPrincipal;      // guarda el menu al que lleva la opción volver en los gestores
     private GestorHotel gestorHotel;
     private Scanner scanner = new Scanner(System.in);
 
@@ -144,6 +143,10 @@ public class Menu {
                 }
                 return estado;
             }
+
+            case "verReservas":
+                mostrarTexto(gestorHotel.listarReservas(), "No hay reservas para mostrar.");
+                return estado;
 
             case "nuevaReserva":
                 gestorHotel.agregarReserva();
