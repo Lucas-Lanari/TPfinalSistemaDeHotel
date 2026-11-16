@@ -24,19 +24,27 @@ public class GestorHotel {
 
     //busqueda coordinada de habitaciones para una fecha disponible
 
-    public ArrayList<Habitaciones> buscarHabitacionFechaDisponible(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        ArrayList<Integer> arrIdDisponibles= new ArrayList<>();
-        ArrayList<Habitaciones> arrHabitacionesDisponibles= new ArrayList<>();
+    public ArrayList<Integer> buscarHabitacionesFechaDisponibles(Integer idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        ArrayList<Integer> arrIdsHabitaciones= new ArrayList<>();
+        ArrayList<Integer> arrDisponibles= new ArrayList<>();
 
-        arrIdDisponibles = gestorReservas.buscarHabitacionesParaReserva(fechaInicio, fechaFin);
+        arrIdsHabitaciones = gestorHabitaciones.listarIdsHabitacionesHabilitadas();
 
-        for (int idActual : arrIdDisponibles) {
-            if (gestorHabitaciones.estaLibre(idActual))
-                arrHabitacionesDisponibles.add(gestorHabitaciones.buscarPorClave(idActual));
+        for (Integer idHabitacion : arrIdsHabitaciones) {
+            if (gestorReservas.fechaDisponible(
+                    idReserva,
+                    idHabitacion,
+                    fechaInicio,
+                    fechaFin ))
+            {
+                arrDisponibles.add(idHabitacion); //agregamos la habitacion que tiene disponibilidad para el periodo ingresado
+            }
+
         }
 
-        return arrHabitacionesDisponibles;
+        return arrDisponibles;
     }
+
 
     //metodos para el GestorHabitaciones
 
@@ -156,15 +164,11 @@ public class GestorHotel {
         return actual != null && RolesCuenta.CLIENTE.name().equals(actual.getRol());
     }
 
-    public boolean fechaDisponible(int idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) throws FechaNoDisponibleException {
-        return gestorReservas.fechaDisponible(idReserva, fechaInicio, fechaFin);
+    public boolean fechaDisponible(Integer idReserva, Integer idHabitacion,LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return gestorReservas.fechaDisponible(idReserva, idHabitacion, fechaInicio, fechaFin);
     }
 
-    public boolean fechaDisponibleSinId(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return gestorReservas.fechaDisponibleSinId(fechaInicio, fechaFin);
-    }
-
-    private String listarReservasPorIdHabitacion(int idHabitacion) {
+    private String listarReservasPorIdHabitacion(Integer idHabitacion) {
         return gestorReservas.listarReservasPorHabitacion(idHabitacion);
     }
 
@@ -172,20 +176,16 @@ public class GestorHotel {
         return gestorReservas.listarReservasPorPasajero(dniPasajero);
     }
 
-    public Reservas buscarReserva(int idReserva) throws IdReservaInexistenteException {
+    public Reservas buscarReserva(Integer idReserva) throws IdReservaInexistenteException {
         return gestorReservas.buscarReserva(idReserva);
     }
 
-    public boolean modificarReserva(int idReserva, LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
-        return gestorReservas.modificarReserva(idReserva, nuevaFechaInicio, nuevaFechaFin);
-    }
-
-    public boolean modificarReserva(int idReserva, Habitaciones nuevaHabitacion , LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
-        return gestorReservas.modificarReserva(idReserva, nuevaHabitacion, nuevaFechaInicio, nuevaFechaFin);
+    public boolean modificarReserva(Integer idReserva, Integer idHabitacion, LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
+        return gestorReservas.modificarReserva(idReserva, idHabitacion, nuevaFechaInicio, nuevaFechaFin);
     }
 
     //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
-    public ArrayList<Integer> buscarHabitacionesParaReserva(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return gestorReservas.buscarHabitacionesParaReserva(fechaInicio, fechaFin);
+    public ArrayList<Integer> buscarHabitacionesParaReserva(Integer idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return gestorReservas.buscarHabitacionesParaReserva(idHabitacion, fechaInicio, fechaFin);
     }
 }
