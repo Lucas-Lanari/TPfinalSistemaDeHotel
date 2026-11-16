@@ -1,10 +1,7 @@
 package Gestores;
 
 import Clases.Cuentas;
-import Excepciones.ContraseniaIncorrectaException;
-import Excepciones.ErrorLoginException;
-import Excepciones.UsuarioEliminadoException;
-import Excepciones.UsuarioInexistenteException;
+import Excepciones.*;
 
 public class GestorCuentas extends Contenedor<Cuentas> {
 
@@ -41,6 +38,39 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         return null;
     }
 
+    private boolean existeDniActivo(String dni) {
+        for (Cuentas actual : lista) {
+            if (!actual.getEstaEliminado() && actual.getDni().equals(dni)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean existeUsuarioActivo(String usuario) {
+        for (Cuentas actual : lista) {
+            if (!actual.getEstaEliminado() && actual.getNombreUsuario().equals(usuario)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean crearCuenta(Cuentas nueva) throws DniExistenteException, UsuarioExistenteException {
+
+        if (existeDniActivo(nueva.getDni())) {
+            throw new DniExistenteException("El DNI ya está registrado.");
+        }
+
+        if (existeUsuarioActivo(nueva.getNombreUsuario())) {
+            throw new UsuarioExistenteException("El nombre de usuario ya está registrado.");
+        }
+
+        agregar(nueva);
+        return true;
+    }
 
     public boolean modificarNombre(Integer id, String nombre) {
         for (Cuentas actual: lista) {

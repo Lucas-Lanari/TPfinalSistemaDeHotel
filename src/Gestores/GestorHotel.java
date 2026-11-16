@@ -86,8 +86,8 @@ public class GestorHotel {
 
     //metodos para el gestorCuentas
 
-    public void agregarCuenta (Cuentas nuevo) {
-        gestorCuentas.agregar(nuevo);
+    public boolean crearCuenta(Cuentas nueva) {
+        return gestorCuentas.crearCuenta(nueva);
     }
 
     public void eliminarCuenta (Cuentas elemento) {
