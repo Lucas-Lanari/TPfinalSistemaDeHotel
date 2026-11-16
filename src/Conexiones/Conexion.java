@@ -14,17 +14,11 @@ public abstract class Conexion {
     private final static String name = "root";
     private final static String pass = "Hola123!";
 
-    private static Connection crearConexion() throws SQLException {
-        return DriverManager.getConnection(url,name,pass);
-    }
+    private final static String urlBackup = "jdbc:mysql://localhost:3306/hotelBackup";
+    private final static String nameBackup = "root";
+    private final static String passBackup = "Hola123!";
 
-    // SIEMPRE INICIALIZAR AL PRINCIPIO DEL MAIN
-    public static void inicializar() throws SQLException {
-
-        try (Connection conexion = crearConexion();
-             Statement stmt = conexion.createStatement()) {
-
-            stmt.execute("""
+    private final static String crearCuentas = """
                     CREATE TABLE IF NOT EXISTS Cuentas(
                     idCuenta INT PRIMARY KEY AUTO_INCREMENT,
                     nombreUsuario VARCHAR(50) UNIQUE,
@@ -34,9 +28,9 @@ public abstract class Conexion {
                     estaEliminado BOOLEAN,
                     rol VARCHAR(20)
                     );
-                    """);
+                    """;
 
-            stmt.execute("""
+    private final static String crearDatosAdicionalesClientes = """
                     CREATE TABLE IF NOT EXISTS DatosAdicionalesClientes(
                     idCuenta INT PRIMARY KEY AUTO_INCREMENT,
                     paisOrigen VARCHAR(50),
@@ -45,26 +39,26 @@ public abstract class Conexion {
                         FOREIGN KEY (idCuenta)
                         REFERENCES Cuentas(idCuenta)
                     );
-                    """);
+                    """;
 
-            stmt.execute("""
+    private final static String crearHabitaciones = """
                     CREATE TABLE IF NOT EXISTS Habitaciones(
                     idHabitacion INT PRIMARY KEY AUTO_INCREMENT,
                     piso INT,
                     numeroDepartamento INT,
                     razonOcupada VARCHAR(50)
                     );
-                    """);
+                    """;
 
-            stmt.execute("""
+    private final static String crearDniIntegrantes = """
                     CREATE TABLE IF NOT EXISTS DniIntegrantes(
                     idDniIntegrantes INT,
                     dni VARCHAR(9),
                     CONSTRAINT pk_idDniIntegrantes_dni  PRIMARY KEY(idDniIntegrantes,dni)
                     );
-                    """);
+                    """;
 
-            stmt.execute("""
+    private final static String crearReservas = """
                     CREATE TABLE IF NOT EXISTS Reservas(
                     idReserva INT PRIMARY KEY AUTO_INCREMENT,
                     idHabitacion INT,
@@ -79,7 +73,46 @@ public abstract class Conexion {
                     checkOut DATETIME,
                     estadoReserva VARCHAR(50)
                     );
-                    """);
+                    """;
+
+    private static Connection crearConexion() throws SQLException {
+        return DriverManager.getConnection(url,name,pass);
+    }
+
+    private static Connection crearConexionBackup() throws SQLException {
+        return DriverManager.getConnection(urlBackup,nameBackup,passBackup);
+    }
+
+    // SIEMPRE INICIALIZAR AL PRINCIPIO DEL MAIN
+    public static void inicializar() throws SQLException {
+
+        try (Connection conexion = crearConexion();
+             Statement stmt = conexion.createStatement()) {
+
+            stmt.execute(crearCuentas);
+
+            stmt.execute(crearDatosAdicionalesClientes);
+
+            stmt.execute(crearHabitaciones);
+
+            stmt.execute(crearDniIntegrantes);
+
+            stmt.execute(crearReservas);
+
+        }
+
+        try (Connection conexion = crearConexionBackup();
+             Statement stmt = conexion.createStatement()) {
+
+            stmt.execute(crearCuentas);
+
+            stmt.execute(crearDatosAdicionalesClientes);
+
+            stmt.execute(crearHabitaciones);
+
+            stmt.execute(crearDniIntegrantes);
+
+            stmt.execute(crearReservas);
 
         }
     }
@@ -177,7 +210,7 @@ public abstract class Conexion {
             return false;
 
         String sqlGuardarCuenta = """
-        INSERT IGNORE INTO cuentas
+        INSERT IGNORE INTO Cuentas
             (nombreUsuario, nombre, dni, contrasenia,
          estaEliminado, rol)
         VALUES (?, ?, ?, ?, ?, ?)
@@ -268,7 +301,7 @@ public abstract class Conexion {
             return false;
 
         String sqlActualizarCuenta = """
-        UPDATE cuentas
+        UPDATE Cuentas
         SET nombreUsuario = ?,
             nombre = ?,
             dni = ?,
@@ -353,7 +386,7 @@ public abstract class Conexion {
             return false;
 
         String sqlActualizarCuenta = """
-        UPDATE cuentas
+        UPDATE Cuentas
         SET estaEliminado = ?
         WHERE idCuenta = ?
         """;
@@ -882,7 +915,97 @@ public abstract class Conexion {
     }
 
 
+    /*public static void realizarBackup() throws SQLException{
 
+        String sqlListarCuentas = "SELECT * FROM Cuentas;";
+        String sqlListarDatosAdicionalesClientes = "SELECT * FROM DatosAdicionalesClientes;";
+        String sqlListarHabitaciones = "SELECT * FROM Habitaciones;";
+        String sqlListarDniIntegrantes = "SELECT * FROM DniIntegrantes;";
+        String sqlListarReservas = "SELECT * FROM Reservas;";
+
+        String sqlAgregarCuentas = """
+                INSERT INTO Cuentas
+                (idCuenta, nombreUsuario, nombre, dni, contrasenia,
+                 estaEliminado, rol)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
+
+        String sqlAgregarDatoAdicional = """
+                    INSERT INTO DatosAdicionalesClientes
+                    (idCuenta, paisOrigen, domicilioOrigen)
+                    VALUES (?, ?, ?)
+                    """;
+
+        String sqlLimpiarBackupCuentas = """
+                DELETE FROM Cuentas;
+                """;
+        String sqlLimpiarBackupDatosAdicionalesClientes = """
+                DELETE FROM DatosAdicionalesClientes;
+                """;
+        String sqlLimpiarBackupHabitaciones = """
+                DELETE FROM Habitaciones;
+                """;
+        String sqlLimpiarBackupDniIntegrantes = """
+                DELETE FROM DniIntegrantes;
+                """;
+        String sqlLimpiarBackupReservas = """
+                DELETE FROM Reservas;
+                """;
+
+        try (Connection conexion = crearConexion();
+             Connection conexionBackup = crearConexionBackup();
+             Statement stmt = conexion.createStatement()) {
+
+            try (Statement stmtBackup = conexionBackup.createStatement()) {
+                stmtBackup.executeUpdate(sqlLimpiarBackupDniIntegrantes);
+                stmtBackup.executeUpdate(sqlLimpiarBackupHabitaciones);
+                stmtBackup.executeUpdate(sqlLimpiarBackupReservas);
+                stmtBackup.executeUpdate(sqlLimpiarBackupDatosAdicionalesClientes);
+                stmtBackup.executeUpdate(sqlLimpiarBackupCuentas);
+            }
+
+            ResultSet resultadosCuentas = stmt.executeQuery(sqlListarCuentas);
+
+            while (resultadosCuentas.next()) {
+
+                try (PreparedStatement ps = conexionBackup.prepareStatement(sqlAgregarCuentas)) {
+                    ps.setInt(1,resultadosCuentas.getInt("idCuenta"));
+                    ps.setString(2,resultadosCuentas.getString("nombreUsuario"));
+                    ps.setString(3,resultadosCuentas.getString("nombre"));
+                    ps.setString(4,resultadosCuentas.getString("dni"));
+                    ps.setString(5,resultadosCuentas.getString("contrasenia"));
+                    ps.setBoolean(6,resultadosCuentas.getBoolean("estaEliminado"));
+                    ps.setString(7,resultadosCuentas.getString("rol"));
+
+                    ps.executeUpdate();
+                }
+
+            }
+
+            ResultSet resultadosCuentas = stmt.executeQuery(sqlListarCuentas);
+
+            while (resultadosCuentas.next()) {
+
+                try (PreparedStatement ps = conexionBackup.prepareStatement(sqlAgregarCuentas)) {
+                    ps.setInt(1,resultadosCuentas.getInt("idCuenta"));
+                    ps.setString(2,resultadosCuentas.getString("nombreUsuario"));
+                    ps.setString(3,resultadosCuentas.getString("nombre"));
+                    ps.setString(4,resultadosCuentas.getString("dni"));
+                    ps.setString(5,resultadosCuentas.getString("contrasenia"));
+                    ps.setBoolean(6,resultadosCuentas.getBoolean("estaEliminado"));
+                    ps.setString(7,resultadosCuentas.getString("rol"));
+
+                    ps.executeUpdate();
+                }
+
+            }
+
+
+
+
+
+        }
+    }*/
 
 
 
