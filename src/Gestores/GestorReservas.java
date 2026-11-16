@@ -3,6 +3,7 @@ package Gestores;
 
 import Clases.Habitaciones;
 import Clases.Reservas;
+import Enumeradores.EstadoReserva;
 import Enumeradores.RazonesOcupada;
 import Excepciones.FechaInvalidaException;
 import Excepciones.FechaNoDisponibleException;
@@ -14,30 +15,31 @@ import java.util.ArrayList;
 
 public class GestorReservas extends Contenedor<Reservas> {
 
-    public boolean fechaDisponible(int idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) throws FechaNoDisponibleException {
-        for (Reservas actual : lista) {
-            if ( idReserva != actual.getId() && ( fechaInicio.isBefore(actual.getCheckOut()) && fechaFin.isAfter(actual.getCheckIn()) ) )
-                throw new FechaNoDisponibleException();
+    public boolean fechaDisponible(Integer idReserva, Integer idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+
+        if (fechaInicio == null || fechaFin == null || !fechaInicio.isBefore(fechaFin)) {
+            return false;
         }
 
-        return true;
-    }
-
-    public boolean fechaDisponibleSinId(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         for (Reservas actual : lista) {
-            if ( fechaInicio.isBefore(actual.getCheckOut()) && fechaFin.isAfter(actual.getCheckIn()) )
+            if (actual.getIdHabitacion().equals(idHabitacion)  //verificamos que la habitacion pasada por parametro tenga esa fecha disponible
+                    &&  actual.getEstado() != EstadoReserva.TERMINADA //la reserva no debe tener estado terminado/eliminado
+                    && ( idReserva == null || !idReserva.equals(actual.getId()) ) //la reserva no debe compararse con si misma
+                    && ( fechaInicio.isBefore(actual.getCheckOut()) && fechaFin.isAfter(actual.getCheckIn()) ) ) //verificamos si la fecha nueva tiene superposicion con otra
+            {
                 return false;
+            }
         }
 
         return true;
     }
 
-    public String listarReservasPorHabitacion(int idHabitacion) {
+    public String listarReservasPorHabitacion(Integer idHabitacion) {
         StringBuilder respuesta = new StringBuilder();
         respuesta.append("Las reservas para la habitacion "+ idHabitacion + " son:\n");
 
         for (Reservas actual : lista) {
-            if (idHabitacion == actual.getIdHabitacion()) {
+            if (idHabitacion.equals(actual.getIdHabitacion()) ) {
                 respuesta.append(actual.toString());
                 respuesta.append("\n");
             }
@@ -63,9 +65,9 @@ public class GestorReservas extends Contenedor<Reservas> {
         return respuesta.toString();
     }
 
-    public Reservas buscarReserva(int idReserva) throws IdReservaInexistenteException {
+    public Reservas buscarReserva(Integer idReserva) throws IdReservaInexistenteException {
         for (Reservas actual : lista) {
-            if (idReserva == actual.getId()) {
+            if (idReserva.equals(actual.getId())) {
                 return actual;
             }
         }
@@ -73,56 +75,42 @@ public class GestorReservas extends Contenedor<Reservas> {
         throw new IdReservaInexistenteException();
     }
 
-    public boolean modificarReserva(int idReserva, LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
+    public boolean modificarReserva(int idReserva, int idHabitacion, LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
 
         //verificamos que la nueva fecha de Inicio este antes de la fecha final
-        if (nuevaFechaInicio.isBefore(nuevaFechaFin)) {
+        if (nuevaFechaInicio == null || nuevaFechaFin == null || !nuevaFechaInicio.isBefore(nuevaFechaFin)) {
             throw new FechaInvalidaException();
         }
 
         Reservas reservaElegida = buscarReserva(idReserva);
 
-        if (fechaDisponible(idReserva, nuevaFechaInicio, nuevaFechaFin)) {
-            reservaElegida.setCheckIn(nuevaFechaInicio);
-            reservaElegida.setCheckOut(nuevaFechaFin);
+
+        if (reservaElegida.getEstado() == EstadoReserva.TERMINADA) {
+            throw new FechaNoDisponibleException();
         }
 
-        return true;
-    }
-
-    public boolean modificarReserva(int idReserva, Habitaciones nuevaHabitacion , LocalDateTime nuevaFechaInicio, LocalDateTime nuevaFechaFin) throws IdReservaInexistenteException, FechaNoDisponibleException, FechaInvalidaException {
-
-        //verificamos que la nueva fecha de Inicio este antes de la fecha final
-        if (nuevaFechaFin.isBefore(nuevaFechaInicio)) {
-            throw new FechaInvalidaException();
+        if (!fechaDisponible(idReserva, idHabitacion,nuevaFechaInicio, nuevaFechaFin)) {
+            throw new FechaNoDisponibleException();
         }
 
-        if (nuevaHabitacion.getOcupacion() != RazonesOcupada.LIBRE) {
-            throw new HabitacionNoDisponibleException();
-        }
-
-        Reservas reservaElegida = buscarReserva(idReserva);
-
-        if (fechaDisponible(idReserva, nuevaFechaInicio, nuevaFechaFin)) {
-            reservaElegida.setIdHabitacion(nuevaHabitacion.getId());
-            reservaElegida.setCheckIn(nuevaFechaInicio);
-            reservaElegida.setCheckOut(nuevaFechaFin);
-        }
+        reservaElegida.setIdHabitacion(idHabitacion);
+        reservaElegida.setCheckIn(nuevaFechaInicio);
+        reservaElegida.setCheckOut(nuevaFechaFin);
 
         return true;
     }
 
     //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
-    public ArrayList<Integer> buscarHabitacionesParaReserva(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        ArrayList<Integer> arrHabitaciones = new ArrayList<>();
+    public ArrayList<Integer> buscarHabitacionesParaReserva(int idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        ArrayList<Integer> arrHabitacionesOcupadas = new ArrayList<>();
 
         for (Reservas actual : lista) {
-            if (fechaDisponibleSinId(fechaInicio, fechaFin)) {
-                arrHabitaciones.add(actual.getIdHabitacion());
+            if (actual.getEstado() != EstadoReserva.TERMINADA && (fechaInicio.isBefore(actual.getCheckOut()) && actual.getIdHabitacion() != idHabitacion && fechaFin.isAfter(actual.getCheckIn())) ) {
+                arrHabitacionesOcupadas.add(actual.getIdHabitacion());
             }
         }
 
-        return arrHabitaciones;
+        return arrHabitacionesOcupadas;
     }
 
 }
