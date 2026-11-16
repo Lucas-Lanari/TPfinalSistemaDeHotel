@@ -145,11 +145,11 @@ public class GestorHotel {
 
     //metodos del gestorReservas
 
-    public void agregarReserva(Reservas nuevo) {
+    public boolean agregarReserva(Reservas nuevo) {
         gestorReservas.agregarReserva(nuevo);
     }
 
-    public void eliminarReserva(int id) {
+    public boolean eliminarReserva(int id) {
         gestorReservas.eliminarReserva(id);
     }
 

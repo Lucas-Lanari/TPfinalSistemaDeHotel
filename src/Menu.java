@@ -1,13 +1,15 @@
-import Clases.Admins;
-import Clases.Clientes;
-import Clases.Cuentas;
-import Clases.Staff;
+import Clases.*;
 import Conexiones.Conexion;
+import Enumeradores.EstadoReserva;
 import Enumeradores.GuiEstados;
 import Excepciones.DniExistenteException;
 import Excepciones.UsuarioExistenteException;
 import Gestores.GestorHotel;
 import Excepciones.ErrorLoginException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
@@ -229,7 +231,9 @@ public class Menu {
                 return estado;
 
             case "nuevaReserva":
-                gestorHotel.agregarReserva();
+
+                System.out.println("E");
+
                 return estado;
 
             case "modificarReserva":
@@ -279,6 +283,88 @@ public class Menu {
             System.out.println(mensajeVacio);
         else
             System.out.println(texto);
+    }
+
+    private void nuevaReserva() {
+        try {
+            LocalDateTime inicio = pedirFecha("Fecha de ingreso (yyyy-MM-dd): ").atTime(14, 0);
+            LocalDateTime fin = pedirFecha("Fecha de salida (yyyy-MM-dd): ").atTime(10, 0);
+
+            if (!inicio.isBefore(fin)) {
+                System.out.println("La salida debe ser posterior al ingreso.");
+                return;
+            }
+
+            ArrayList<Integer> libres = gestorHotel.buscarHabitacionesFechaDisponibles(null, inicio, fin);
+
+            if (libres.isEmpty()) {
+                System.out.println("No hay habitaciones disponibles para ese período.");
+                return;
+            }
+
+            System.out.println("Habitaciones disponibles: ");
+            System.out.println(libres);
+            System.out.print("Elegí el id de la habitación: ");
+            int idHabitacion = Integer.parseInt(scanner.nextLine().trim());
+
+            if (!libres.contains(idHabitacion)) {
+                System.out.println("Esa habitación no está en la lista de disponibles.");
+                return;
+            }
+
+            ArrayList<String> dnis = new ArrayList<>();
+            String seguir;
+            do {
+                String dni;
+                while (true) {
+                    System.out.print("DNI del pasajero: ");
+                    dni = scanner.nextLine().trim();
+
+                    if (dni.isEmpty()) {
+                        System.out.println("El DNI no puede estar vacío.");
+                    } else if (!dni.matches("\\d{1,9}")) {
+                        System.out.println("El DNI debe contener entre 1 y 9 números.");
+                    } else if (dnis.contains(dni)) {
+                        System.out.println("Ese DNI ya fue agregado.");
+                    } else {
+                        break;
+                    }
+                }
+
+                dnis.add(dni);
+                System.out.print("¿Agregar otro pasajero? (S/N): ");
+                seguir = scanner.nextLine().trim();
+
+            } while (seguir.equalsIgnoreCase("S"));
+
+            if (dnis.isEmpty()) {
+                System.out.println("Tiene que haber al menos un pasajero.");
+                return;
+            }
+
+
+            Reservas nueva = new Reservas(null, idHabitacion, gestorHotel.getCuentaActual().getId(), inicio, fin, EstadoReserva.ACTIVA);
+
+            for (String dni : dnis) {
+                nueva.dniIntegrantes.add(dni);
+            }
+
+            if (gestorHotel.agregarReserva(nueva)) {
+                System.out.println("Reserva creada correctamente.");
+            } else {
+                System.out.println("No se pudo crear la reserva.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("Formato de fecha inválido. Usá yyyy-MM-dd.");
+        }
+    }
+
+    private LocalDate pedirFecha(String mensaje) {
+        System.out.print(mensaje);
+        return LocalDate.parse(scanner.nextLine().trim());
     }
 
 }
