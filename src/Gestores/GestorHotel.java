@@ -61,8 +61,8 @@ public class GestorHotel {
         return false;
     }
 
-    public Habitaciones eliminarHabitacion(Habitaciones habitacion) {
-        return gestorHabitaciones.quitar(habitacion.getId());
+    public Habitaciones eliminarHabitacion(int idHabitacion) {
+        return gestorHabitaciones.quitar(idHabitacion);
     }
 
     public String listarHabitaciones() {
