@@ -16,11 +16,6 @@ public class Main {
 
         try {
             Conexion.inicializar();
-
-//            for (Cuentas c : Conexion.listarCuentas()) {
-//                gestorHotel.crearCuenta(c);
-//            }
-
             new Menu(gestorHotel).ejecutar();
 
         } catch (SQLException e) {

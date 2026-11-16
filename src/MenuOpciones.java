@@ -1,3 +1,6 @@
+import Excepciones.SobrecargaTeclasException;
+import Excepciones.TeclaYaUtilizadaException;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
