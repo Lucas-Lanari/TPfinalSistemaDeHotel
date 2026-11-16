@@ -1,12 +1,27 @@
 package Gestores;
 
 import Clases.Cuentas;
+import Clases.Habitaciones;
+import Conexiones.Conexion;
 import Excepciones.*;
+
+import java.sql.SQLException;
+import java.util.HashSet;
 
 public class GestorCuentas extends Contenedor<Cuentas> {
 
     private Cuentas cuentaActual; //para el logueo
 
+    public GestorCuentas() throws SQLException {
+        super();
+
+        HashSet<Cuentas> cuentas = Conexion.listarCuentas();
+
+        for (Cuentas cuenta : cuentas) {
+            super.agregar(cuenta);
+        }
+
+    }
 
     public Cuentas buscarCuentaPorId(Integer id) {
         for (Cuentas actual: lista) {
@@ -67,6 +82,10 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         if (existeUsuarioActivo(nueva.getNombreUsuario())) {
             throw new UsuarioExistenteException("El nombre de usuario ya está registrado.");
         }
+
+        if (!Conexion.crearCuenta(nueva))
+            return false;
+
 
         agregar(nueva);
         return true;
