@@ -12,9 +12,11 @@ import Excepciones.HabitacionNoDisponibleException;
 import Excepciones.IdReservaInexistenteException;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 
 import static Conexiones.Conexion.*;
 
@@ -98,7 +100,7 @@ public class GestorReservas extends Contenedor<Reservas> {
 
         //agregamos las reservas donde se aparezca el dni del pasajero
         for (Reservas actual : lista) {
-            for (String dni : actual.dniIntegrantes) {
+            for (String dni : actual.listarDniIntegrantes()) {
                 if (dniPasajero.equals(dni)) {
                     respuesta.append(actual.toString());
                     respuesta.append("\n");
@@ -115,13 +117,51 @@ public class GestorReservas extends Contenedor<Reservas> {
         StringBuilder respuesta = new StringBuilder();
 
         for (Reservas actual : lista) {
-            if (actual.getIdCuentaResponsable() == idCuenta) {
+            if (Objects.equals(actual.getIdCuentaResponsable(), idCuenta)) {
                 respuesta.append(actual.toString());
                 respuesta.append("\n");
             }
         }
 
         return respuesta.toString();
+    }
+
+    public boolean agregarDniReserva(int idReserva, String dni) {
+
+        Reservas reserva;
+
+        try {
+            reserva = buscarReserva(idReserva);
+        } catch (IdReservaInexistenteException e) {
+            reserva = null;
+        }
+
+        if (reserva == null)
+            return false;
+
+        reserva.agregarDniIntegrante(dni);
+        Conexion.actualizarReserva(reserva);
+
+        return true;
+    }
+
+    public boolean eliminarDniReserva(int idReserva, String dni) {
+
+        Reservas reserva;
+
+        try {
+            reserva = buscarReserva(idReserva);
+        } catch (IdReservaInexistenteException e) {
+            reserva = null;
+        }
+
+        if (reserva == null)
+            return false;
+
+        reserva.quitarDniIntegrante(dni);
+        Conexion.actualizarReserva(reserva);
+
+        return true;
     }
 
     public Reservas buscarReserva(Integer idReserva) throws IdReservaInexistenteException {
@@ -161,17 +201,19 @@ public class GestorReservas extends Contenedor<Reservas> {
         return true;
     }
 
-    //metodo para listar dentro de un array de Integer habitaciones que puedan reservarse debtri de un periodo
-    public ArrayList<Integer> buscarHabitacionesParaReserva(int idHabitacion, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        ArrayList<Integer> arrHabitacionesOcupadas = new ArrayList<>();
+    public ArrayList<LocalDate> fechasLibres(Integer idReserva, Integer idHabitacion, int dias) {
+        ArrayList<LocalDate> libres = new ArrayList<>();
+        LocalDate dia = LocalDate.now();
 
-        for (Reservas actual : lista) {
-            if (actual.getEstado() != EstadoReserva.TERMINADA && (fechaInicio.isBefore(actual.getCheckOut()) && actual.getIdHabitacion() != idHabitacion && fechaFin.isAfter(actual.getCheckIn())) ) {
-                arrHabitacionesOcupadas.add(actual.getIdHabitacion());
+        for (int i = 0; i < dias; i++) {
+            // la noche del día "dia" está libre si se puede reservar de dia 14:00 a dia+1 10:00
+            if (fechaDisponible(idReserva, idHabitacion, dia.atTime(14, 0), dia.plusDays(1).atTime(10, 0))) {
+                libres.add(dia);
             }
+            dia = dia.plusDays(1);
         }
 
-        return arrHabitacionesOcupadas;
+        return libres;
     }
 
 }

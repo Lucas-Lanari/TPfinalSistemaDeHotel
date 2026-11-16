@@ -9,16 +9,11 @@ public class Clientes extends Cuentas {
     private String paisOrigen;
     private String domicilioOrigen;
 
-    public Clientes(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado, String paisOrigen, String domicilioOrigen) {
+    public Clientes(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado, String paisOrigen, String domicilioOrigen) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
         this.paisOrigen = paisOrigen;
         this.domicilioOrigen = domicilioOrigen;
-
-        permisoManejarReservas=false;
-        permisoVerHabitaciones = false;
-        permisoCrearCuenta=false;
-        permisoEliminarCuenta=false;
     }
 
     public Clientes(ResultSet resultadoCuenta, ResultSet resultadoDatosAdicional) throws SQLException {
@@ -40,6 +35,17 @@ public class Clientes extends Cuentas {
         return RolesCuenta.CLIENTE.name();
     }
 
+    @Override
+    protected void asignarPermisos() {
+        permisoManejarReservas=false;
+        permisoVerHabitaciones = false;
+        permisoManejarCuentas=false;
+        permisoManejarHabitaciones = false;
+        permisoCrearCuentas = false;
+        permisoCrearHabitaciones=false;
+        permisoHacerBackup=false;
+    }
+
 
     ///GETTERS Y SETTERS
     public void setDomicilioOrigen(String domicilioOrigen) {
@@ -58,44 +64,6 @@ public class Clientes extends Cuentas {
         return domicilioOrigen;
     }
 
-    @Override
-    public boolean puedeCrearCuenta() {
-        return false;
-    }
 
-    @Override
-    public boolean puedeEliminarCuenta() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeCrearReserva() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeModificarReserva() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeCancelarReserva() {
-        return true;
-    }
-
-    @Override
-    public boolean puedeHacerCheckInOut() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeHacerBackup() {
-        return false;
-    }
-
-    @Override
-    public boolean puedeVerReservas() {
-        return false;
-    }
 
 }

@@ -49,7 +49,7 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
             throw new IdHabitacionNoEncontradoException();
 
         try {
-            if (Conexion.eliminarHabitacion(buscarPorClave(idHabitacion)))
+            if (!Conexion.eliminarHabitacion(buscarPorClave(idHabitacion)))
                 return false;
         } catch (SQLException e) {
             return false;
@@ -117,6 +117,28 @@ public class GestorHabitaciones extends ContenedorMapa<Integer, Habitaciones> {
         return true;
     }
 
+    public String listarHabitacionesPorOcupacion(RazonesOcupada... razones) {
+        StringBuilder respuesta = new StringBuilder();
+
+        for (Habitaciones h : mapa.values()) {
+            for (RazonesOcupada razon : razones) {
+                if (h.getOcupacion() == razon) {
+                    respuesta.append(h).append('\n');
+                    break;
+                }
+            }
+        }
+        return respuesta.toString();
+    }
+
+    public boolean existeHabitacion(int piso, int numeroDepartamento) {
+        for (Habitaciones h : mapa.values()) {
+            if (h.getPiso() == piso && h.getNumeroDepartamento() == numeroDepartamento) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 

@@ -14,9 +14,9 @@ public abstract class Conexion {
     private final static String name = "root";
     private final static String pass = "Hola123!";
 
-    private final static String urlBackup = "jdbc:mysql://localhost:3306/hotelBackup";
-    private final static String nameBackup = "root";
-    private final static String passBackup = "Hola123!";
+//    private final static String urlBackup = "jdbc:mysql://localhost:3306/hotelBackup";
+//    private final static String nameBackup = "root";
+//    private final static String passBackup = "Hola123!";
 
     private final static String crearCuentas = """
                     CREATE TABLE IF NOT EXISTS Cuentas(
@@ -79,9 +79,9 @@ public abstract class Conexion {
         return DriverManager.getConnection(url,name,pass);
     }
 
-    private static Connection crearConexionBackup() throws SQLException {
-        return DriverManager.getConnection(urlBackup,nameBackup,passBackup);
-    }
+//    private static Connection crearConexionBackup() throws SQLException {
+//        return DriverManager.getConnection(urlBackup,nameBackup,passBackup);
+//    }
 
     // SIEMPRE INICIALIZAR AL PRINCIPIO DEL MAIN
     public static void inicializar() throws SQLException {
@@ -101,7 +101,7 @@ public abstract class Conexion {
 
         }
 
-        try (Connection conexion = crearConexionBackup();
+/*        try (Connection conexion = crearConexionBackup();
              Statement stmt = conexion.createStatement()) {
 
             stmt.execute(crearCuentas);
@@ -114,7 +114,7 @@ public abstract class Conexion {
 
             stmt.execute(crearReservas);
 
-        }
+        }*/
     }
 
     // CUENTAS
@@ -217,13 +217,12 @@ public abstract class Conexion {
         """;
 
         try (Connection conexion = crearConexion()) {
-
             conexion.setAutoCommit(false);
 
             int idResultante;
 
             try {
-                try (PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
+                try (PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta, Statement.RETURN_GENERATED_KEYS)) {
 
                     ps.setString(1, cuenta.getNombreUsuario());
                     ps.setString(2, cuenta.getNombre());
@@ -231,6 +230,7 @@ public abstract class Conexion {
                     ps.setString(4, cuenta.getContrasenia());
                     ps.setBoolean(5, cuenta.getEstaEliminado());
                     ps.setString(6, cuenta.getRol());
+
 
                     if (ps.executeUpdate() == 0) {
                         conexion.rollback();
@@ -244,6 +244,9 @@ public abstract class Conexion {
                             conexion.rollback();
                             return false;
                         }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        return false;
                     }
 
                 }
@@ -528,7 +531,7 @@ public abstract class Conexion {
         """;
 
         try (Connection conexion = crearConexion();
-             PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta)) {
+             PreparedStatement ps = conexion.prepareStatement(sqlGuardarCuenta, Statement.RETURN_GENERATED_KEYS)) {
 
             int idResultante;
 
@@ -552,6 +555,7 @@ public abstract class Conexion {
 
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -762,14 +766,16 @@ public abstract class Conexion {
         }
     }
 
-    private static void guardarIntegrantesReserva(Reservas reserva,Connection conexion) throws SQLException {
+    private static void guardarIntegrantesReserva(Reservas reserva, Connection conexion) throws SQLException {
 
         String sqlAgregar = "INSERT INTO DniIntegrantes(idDniIntegrantes,dni) VALUES (?, ?)";
 
         for (String dni : reserva.listarDniIntegrantes()) {
             try (PreparedStatement psAgregar = conexion.prepareStatement(sqlAgregar)) {
-                psAgregar.setInt(1,reserva.getId());
-                psAgregar.setString(2,dni);
+                psAgregar.setInt(1, reserva.getId());
+                psAgregar.setString(2, dni);
+
+                psAgregar.executeUpdate();
             }
         }
     }
@@ -788,7 +794,7 @@ public abstract class Conexion {
 
             conexion.setAutoCommit(false);
 
-            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setInt(1,reserva.getIdHabitacion());
                 ps.setInt(2,reserva.getIdCuentaResponsable());
                 ps.setObject(3,reserva.getCheckIn());

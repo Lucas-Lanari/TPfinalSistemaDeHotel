@@ -1,12 +1,10 @@
 package Clases;
 
-import Interfaces.IPermisos;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
+public abstract class Cuentas implements Comparable<Cuentas> {
     protected Integer id;
     protected String dni;
     protected String nombre;
@@ -16,9 +14,12 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
 
     protected boolean permisoManejarCuentas;
     protected boolean permisoManejarReservas;
-    protected boolean permisoCrearHabitacion;
-    protected boolean permisoEliminarHabitacion;
+    protected boolean permisoManejarHabitaciones;
     protected boolean permisoVerHabitaciones;
+    protected boolean permisoCrearCuentas;
+    protected boolean permisoCrearHabitaciones;
+    protected boolean permisoHacerBackup;
+
 
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
@@ -27,6 +28,7 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
         this.nombreUsuario = nombreUsuario;
         this.contrasenia = contrasenia;
         this.estaEliminado = estaEliminado;
+        asignarPermisos();
     }
 
     public Cuentas(ResultSet resultadoCuenta) throws SQLException {
@@ -67,7 +69,7 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
     public abstract String getRol();
 
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -91,41 +93,32 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
         this.estaEliminado = estaEliminado;
     }
 
-    public boolean isPermisoCrearCuenta() {
-        return permisoCrearCuenta;
+    public boolean isPermisoManejarCuentas() {
+        return permisoManejarCuentas;
     }
 
-    public boolean isPermisoEliminarCuenta() {
-        return permisoEliminarCuenta;
+    public boolean isPermisoManejarReservas() {
+        return permisoManejarReservas;
     }
 
-    public boolean isPermisoCrearReserva() {
-        return permisoCrearReserva;
+    public boolean isPermisoVerHabitaciones() {
+        return permisoVerHabitaciones;
     }
 
-    public boolean isPermisoModificarReserva() {
-        return permisoModificarReserva;
+    public boolean isPermisoManejarHabitaciones() {
+        return permisoManejarHabitaciones;
     }
 
-    public boolean isPermisoCancelarReserva() {
-        return permisoCancelarReserva;
+    public boolean isPermisoCrearCuentas() {
+        return permisoCrearCuentas;
     }
 
-    public boolean isPermisoCrearHabitacion() {
-        return permisoCrearHabitacion;
+    public boolean isPermisoCrearHabitaciones() {
+        return permisoCrearHabitaciones;
     }
 
-    public void setPermisoCrearHabitacion(boolean permisoCrearHabitacion) {
-        this.permisoCrearHabitacion = permisoCrearHabitacion;
-    }
+    protected abstract void asignarPermisos();
 
-    public boolean isPermisoEliminarHabitacion() {
-        return permisoEliminarHabitacion;
-    }
-
-    public void setPermisoEliminarHabitacion(boolean permisoEliminarHabitacion) {
-        this.permisoEliminarHabitacion = permisoEliminarHabitacion;
-    }
 
     @Override
     public String toString() {
