@@ -7,6 +7,7 @@ import Enumeradores.RazonesOcupada;
 import Enumeradores.RolesCuenta;
 import Excepciones.*;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class GestorHotel {
     private GestorReservas gestorReservas;
     private GestorCuentas gestorCuentas;
 
-    public GestorHotel() {
+    public GestorHotel() throws SQLException {
         this.gestorHabitaciones = new GestorHabitaciones();
         this.gestorCuentas = new GestorCuentas();
         this.gestorReservas = new GestorReservas();
@@ -86,8 +87,12 @@ public class GestorHotel {
 
     //metodos para el gestorCuentas
 
-    public boolean crearCuenta(Cuentas nueva) {
+    public boolean crearCuenta(Cuentas nueva) throws UsuarioExistenteException, DniExistenteException {
         return gestorCuentas.crearCuenta(nueva);
+    }
+
+    public void agregarCuenta(Cuentas nuevo) {
+        gestorCuentas.agregar(nuevo);
     }
 
     public void eliminarCuenta (Cuentas elemento) {

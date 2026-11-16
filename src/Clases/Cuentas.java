@@ -14,13 +14,11 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
     protected String contrasenia;
     protected boolean estaEliminado;
 
-    protected boolean permisoCrearCuenta;
-    protected boolean permisoEliminarCuenta;
-    protected boolean permisoCrearReserva;
-    protected boolean permisoModificarReserva;
-    protected boolean permisoCancelarReserva;
+    protected boolean permisoManejarCuentas;
+    protected boolean permisoManejarReservas;
     protected boolean permisoCrearHabitacion;
     protected boolean permisoEliminarHabitacion;
+    protected boolean permisoVerHabitaciones;
 
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
