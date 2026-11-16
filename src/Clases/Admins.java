@@ -10,11 +10,11 @@ public class Admins extends Cuentas {
     public Admins(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
-        permisoCancelarReserva=true;
+        permisoManejarReservas=true;
         permisoCrearCuenta=true;
-        permisoCrearReserva=true;
         permisoEliminarCuenta=true;
-        permisoModificarReserva=true;
+        permisoVerHabitaciones = true;
+
     }
 
     public Admins(ResultSet resultadoCuenta) throws SQLException {

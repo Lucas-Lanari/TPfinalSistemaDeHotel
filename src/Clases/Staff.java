@@ -10,11 +10,10 @@ public class Staff extends Cuentas {
     public Staff(int id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
-        permisoCancelarReserva=true;
+        permisoManejarReservas=true;
         permisoCrearCuenta=false;
-        permisoCrearReserva=true;
         permisoEliminarCuenta=false;
-        permisoModificarReserva=true;
+        permisoVerHabitaciones = true;
     }
 
     public Staff(ResultSet resultadoCuenta) throws SQLException {

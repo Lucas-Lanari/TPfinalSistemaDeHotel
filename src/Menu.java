@@ -5,6 +5,8 @@ import Clases.Staff;
 import Conexiones.Conexion;
 import Enumeradores.GuiEstados;
 import Enumeradores.RolesCuenta;
+import Excepciones.DniExistenteException;
+import Excepciones.UsuarioExistenteException;
 import Gestores.GestorHotel;
 import Excepciones.ErrorLoginException;
 import java.util.Scanner;
@@ -63,12 +65,17 @@ public class Menu {
                 break;
 
             case GESTION_CUENTAS:
-                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta())
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()
+                        || gestorHotel.getCuentaActual().isPermisoEliminarCuenta()) {
                     menu.agregarOpcion("Ver cuentas", "verCuentas");
+                }
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()) {
                     menu.agregarOpcion("Crear cuenta", "crearCuenta");
-                if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                }
+                if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta()) {
                     menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
-                menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
+                    menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
+                }
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
@@ -122,7 +129,82 @@ public class Menu {
                 return estado;
 
             case "crearCuenta":
-                gestorHotel.agregarCuenta();
+                try {
+                    System.out.println("Seleccione el tipo de cuenta:");
+                    System.out.println("1. Administrador");
+                    System.out.println("2. Staff");
+                    System.out.println("3. Cliente");
+
+                    int opcionCrear = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (opcionCrear < 1 || opcionCrear > 3) {
+                        throw new IllegalArgumentException("Tipo de cuenta inválido.");
+                    }
+
+                    System.out.println("Ingrese DNI:");
+                    String dni = scanner.nextLine();
+
+                    if (!dni.matches("\\d{1,9}")) {
+                        throw new IllegalArgumentException("El DNI debe contener entre 1 y 9 números.");
+                    }
+
+                    System.out.println("Ingrese nombre:");
+                    String nombre = scanner.nextLine();
+
+                    if (nombre.isBlank()) {
+                        throw new IllegalArgumentException("El nombre no puede estar vacío.");
+                    }
+
+                    System.out.println("Ingrese nombre de usuario:");
+                    String usuarioNuevo = scanner.nextLine();
+
+                    if (usuarioNuevo.isBlank()) {
+                        throw new IllegalArgumentException("El usuario no puede estar vacío.");
+                    }
+
+                    System.out.println("Ingrese contraseña:");
+                    String contraseniaNuevo = scanner.nextLine();
+
+                    if (contraseniaNuevo.isBlank()) {
+                        throw new IllegalArgumentException("La contraseña no puede estar vacía.");
+                    }
+
+                    Cuentas nueva = switch (opcionCrear) {
+                        case 1 -> new Admins(0, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
+                        case 2 -> new Staff(0, dni, nombre, usuarioNuevo, contraseniaNuevo, false);
+                        case 3 -> {
+                            System.out.println("Ingrese país de origen:");
+                            String pais = scanner.nextLine();
+
+                            if (pais.isBlank()) {
+                                throw new IllegalArgumentException("El país no puede estar vacío.");
+                            }
+
+                            System.out.println("Ingrese domicilio de origen:");
+                            String domicilio = scanner.nextLine();
+
+                            if (domicilio.isBlank()) {
+                                throw new IllegalArgumentException("El domicilio no puede estar vacío.");
+                            }
+
+                            yield new Clientes(0, dni, nombre, usuarioNuevo,
+                                    contraseniaNuevo, false, pais, domicilio);
+                        }
+                        default -> throw new IllegalArgumentException("Opción inválida.");
+                    };
+
+                    gestorHotel.crearCuenta(nueva);
+                    System.out.println("Cuenta creada correctamente.");
+
+                } catch (DniExistenteException | UsuarioExistenteException e) {
+                    System.out.println(e.getMessage());
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error en los datos ingresados: " + e.getMessage());
+                } catch (java.util.InputMismatchException e) {
+                    scanner.nextLine();
+                    System.out.println("Debe ingresar un número válido.");
+                }
                 return estado;
 
             case "eliminarCuenta":

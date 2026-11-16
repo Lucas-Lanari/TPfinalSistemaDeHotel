@@ -91,6 +91,10 @@ public class GestorHotel {
         return gestorCuentas.crearCuenta(nueva);
     }
 
+    public void agregarCuenta(Cuentas nuevo) {
+        gestorCuentas.agregar(nuevo);
+    }
+
     public void eliminarCuenta (Cuentas elemento) {
         gestorCuentas.eliminar(elemento);
     }
