@@ -11,9 +11,10 @@ public class Admins extends Cuentas {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
         permisoManejarReservas=true;
-        permisoCrearCuenta=true;
-        permisoEliminarCuenta=true;
+        permisoManejarCuentas=true;
         permisoVerHabitaciones = true;
+        permisoManejarHabitaciones = true;
+        permisoCrearCuentas = true;
 
     }
 

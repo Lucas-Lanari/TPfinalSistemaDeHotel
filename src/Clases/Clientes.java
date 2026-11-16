@@ -17,8 +17,10 @@ public class Clientes extends Cuentas {
 
         permisoManejarReservas=false;
         permisoVerHabitaciones = false;
-        permisoCrearCuenta=false;
-        permisoEliminarCuenta=false;
+        permisoManejarCuentas=false;
+        permisoManejarHabitaciones = false;
+        permisoCrearCuentas = false;
+
     }
 
     public Clientes(ResultSet resultadoCuenta, ResultSet resultadoDatosAdicional) throws SQLException {

@@ -11,9 +11,10 @@ public class Staff extends Cuentas {
         super(id, dni, nombre, nombreUsuario, contrasenia, estaEliminado);
 
         permisoManejarReservas=true;
-        permisoCrearCuenta=false;
-        permisoEliminarCuenta=false;
+        permisoManejarHabitaciones = false;
+        permisoManejarCuentas=true;
         permisoVerHabitaciones = true;
+        permisoCrearCuentas = false;
     }
 
     public Staff(ResultSet resultadoCuenta) throws SQLException {

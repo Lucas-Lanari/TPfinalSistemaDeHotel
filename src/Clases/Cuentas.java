@@ -16,9 +16,10 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
 
     protected boolean permisoManejarCuentas;
     protected boolean permisoManejarReservas;
-    protected boolean permisoCrearHabitacion;
-    protected boolean permisoEliminarHabitacion;
+    protected boolean permisoManejarHabitaciones;
     protected boolean permisoVerHabitaciones;
+    protected boolean permisoCrearCuentas;
+
 
     public Cuentas(Integer id, String dni, String nombre, String nombreUsuario, String contrasenia, boolean estaEliminado) {
         this.id = id;
@@ -91,40 +92,44 @@ public abstract class Cuentas implements Comparable<Cuentas>, IPermisos {
         this.estaEliminado = estaEliminado;
     }
 
-    public boolean isPermisoCrearCuenta() {
-        return permisoCrearCuenta;
+    public boolean isPermisoManejarCuentas() {
+        return permisoManejarCuentas;
     }
 
-    public boolean isPermisoEliminarCuenta() {
-        return permisoEliminarCuenta;
+    public boolean isPermisoManejarReservas() {
+        return permisoManejarReservas;
     }
 
-    public boolean isPermisoCrearReserva() {
-        return permisoCrearReserva;
+    public boolean isPermisoVerHabitaciones() {
+        return permisoVerHabitaciones;
     }
 
-    public boolean isPermisoModificarReserva() {
-        return permisoModificarReserva;
+    public boolean isPermisoManejarHabitaciones() {
+        return permisoManejarHabitaciones;
     }
 
-    public boolean isPermisoCancelarReserva() {
-        return permisoCancelarReserva;
+    public boolean isPermisoCrearCuentas() {
+        return permisoCrearCuentas;
     }
 
-    public boolean isPermisoCrearHabitacion() {
-        return permisoCrearHabitacion;
+    public void setPermisoCrearCuentas(boolean permisoCrearCuentas) {
+        this.permisoCrearCuentas = permisoCrearCuentas;
     }
 
-    public void setPermisoCrearHabitacion(boolean permisoCrearHabitacion) {
-        this.permisoCrearHabitacion = permisoCrearHabitacion;
+    public void setPermisoManejarHabitaciones(boolean permisoManejarHabitaciones) {
+        this.permisoManejarHabitaciones = permisoManejarHabitaciones;
     }
 
-    public boolean isPermisoEliminarHabitacion() {
-        return permisoEliminarHabitacion;
+    public void setPermisoManejarCuentas(boolean permisoManejarCuentas) {
+        this.permisoManejarCuentas = permisoManejarCuentas;
     }
 
-    public void setPermisoEliminarHabitacion(boolean permisoEliminarHabitacion) {
-        this.permisoEliminarHabitacion = permisoEliminarHabitacion;
+    public void setPermisoManejarReservas(boolean permisoManejarReservas) {
+        this.permisoManejarReservas = permisoManejarReservas;
+    }
+
+    public void setPermisoVerHabitaciones(boolean permisoVerHabitaciones) {
+        this.permisoVerHabitaciones = permisoVerHabitaciones;
     }
 
     @Override

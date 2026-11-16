@@ -4,7 +4,6 @@ import Clases.Cuentas;
 import Clases.Staff;
 import Conexiones.Conexion;
 import Enumeradores.GuiEstados;
-import Enumeradores.RolesCuenta;
 import Excepciones.DniExistenteException;
 import Excepciones.UsuarioExistenteException;
 import Gestores.GestorHotel;
@@ -24,29 +23,24 @@ public class Menu {
     private MenuOpciones armarMenu(){
         MenuOpciones menu = new MenuOpciones();
 
-        switch (estado){
+        switch (estado) {
             case INICIAR_SESION:
                 menu.agregarOpcion("Ingresar", "login");
                 menu.agregarOpcion("Salir", "salir", 'X');
                 break;
 
             case MENU_PRINCIPAL:
-                if (gestorHotel.getCuentaActual().isPermisoCrearReserva()
-                        || gestorHotel.getCuentaActual().isPermisoModificarReserva()
-                        || gestorHotel.getCuentaActual().isPermisoCancelarReserva())
-                    menu.agregarOpcion("Reservas", "irReservas");
-
-                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()
-                        || gestorHotel.getCuentaActual().isPermisoEliminarCuenta())
+                if (gestorHotel.getCuentaActual().isPermisoManejarCuentas()) {
                     menu.agregarOpcion("Cuentas", "irCuentas");
-
+                }
                 menu.agregarOpcion("Habitaciones", "irHabitaciones");
+                menu.agregarOpcion("Reservas", "irReservas");
                 menu.agregarOpcion("Cerrar sesión", "logout", 'X');
                 break;
 
             case GESTION_HABITACIONES:
                 menu.agregarOpcion("Ver disponibles", "verDisponibles");
-                if (gestorHotel.getCuentaActual().isPermisoCrearHabitacion()){
+                if (gestorHotel.getCuentaActual().isPermisoManejarHabitaciones()) {
                     menu.agregarOpcion("Ver ocupadas", "verOcupadas");
                     menu.agregarOpcion("Ver no disponibles", "verNoDisponibles");
                 }
@@ -54,28 +48,32 @@ public class Menu {
                 break;
 
             case GESTION_RESERVAS:
-                menu.agregarOpcion("Ver reservas", "verReservas");
-                if (gestorHotel.getCuentaActual().isPermisoCrearReserva())
-                    menu.agregarOpcion("Nueva reserva", "nuevaReserva");
-                if (gestorHotel.getCuentaActual().isPermisoModificarReserva())
+                menu.agregarOpcion("Nueva reserva", "nuevaReserva");
+
+                if (gestorHotel.getCuentaActual().isPermisoManejarReservas()){
                     menu.agregarOpcion("Modificar reserva", "modificarReserva");
-                if (gestorHotel.getCuentaActual().isPermisoCancelarReserva())
                     menu.agregarOpcion("Cancelar reserva", "cancelarReserva");
+                } else {
+                    menu.agregarOpcion("Modificar mis reservas", "modificarReserva");
+                    menu.agregarOpcion("Cancelar mi reserva", "cancelarReserva");
+                }
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
             case GESTION_CUENTAS:
-                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()
-                        || gestorHotel.getCuentaActual().isPermisoEliminarCuenta()) {
+                if (gestorHotel.getCuentaActual().isPermisoManejarCuentas()) {
                     menu.agregarOpcion("Ver cuentas", "verCuentas");
+                } else {
+                    menu.agregarOpcion("Ver cuenta", "verCuentas");
+                    menu.agregarOpcion("Eliminar cuenta", "eliminarMiCuenta");
                 }
-                if (gestorHotel.getCuentaActual().isPermisoCrearCuenta()) {
+
+                if (gestorHotel.getCuentaActual().isPermisoCrearCuentas()){
                     menu.agregarOpcion("Crear cuenta", "crearCuenta");
-                }
-                if (gestorHotel.getCuentaActual().isPermisoEliminarCuenta()) {
                     menu.agregarOpcion("Eliminar cuenta", "eliminarCuenta");
                     menu.agregarOpcion("Restaurar cuenta", "restaurarCuenta");
                 }
+
                 menu.agregarOpcion("Volver", "volver", 'X');
                 break;
 
