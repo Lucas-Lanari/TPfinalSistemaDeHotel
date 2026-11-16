@@ -95,6 +95,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setNombre(nombre);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -107,6 +108,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual : lista) {
             if (actual.getId().equals(id)) {
                 actual.setNombreUsuario(nombreUsuario);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -117,6 +119,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setDni(dni);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -128,6 +131,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setContrasenia(contrasenia);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
@@ -139,6 +143,7 @@ public class GestorCuentas extends Contenedor<Cuentas> {
         for (Cuentas actual: lista) {
             if (actual.getId().equals(id)) {
                 actual.setEstaEliminado(nuevoEstado);
+                Conexion.actualizarCuenta(actual);
                 return true;
             }
         }
