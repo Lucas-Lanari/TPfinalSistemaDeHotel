@@ -60,6 +60,21 @@ public class GestorReservas extends Contenedor<Reservas> {
             }
         }
 
+
+
+        return respuesta.toString();
+    }
+
+    public String listarReservasPorCuenta(int idCuenta) {
+        StringBuilder respuesta = new StringBuilder();
+
+        for (Reservas actual : lista) {
+            if (actual.getIdCuentaResponsable() == idCuenta) {
+                respuesta.append(actual.toString());
+                respuesta.append("\n");
+            }
+        }
+
         return respuesta.toString();
     }
 
